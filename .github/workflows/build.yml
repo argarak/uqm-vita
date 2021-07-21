@@ -1,0 +1,50 @@
+name: Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{matrix.platform.os}}
+    strategy:
+      fail-fast: false
+      matrix:
+        platform:
+        - { os: windows-2019, cc: cl.exe,   cxx: cl.exe }
+        - { os: ubuntu-20.04, cc: gcc-10,   cxx: g++-10 }
+        - { os: ubuntu-20.04, cc: clang-12, cxx: clang++-12 }
+        - { os: macos-10.15,  cc: clang,    cxx: clang++ }
+        build_type: [Release, Debug]
+
+    env:
+      SOURCE_DIR: ${{github.workspace}}
+      BUILD_DIR: ${{github.workspace}}/build
+      # CMake will choose a compiler using these environment variables.
+      CC: ${{matrix.platform.cc}}
+      CXX: ${{matrix.platform.cxx}}
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Create Build Environment
+      # We'll use this as our working directory for all subsequent commands.
+      run: cmake -E make_directory ${{env.BUILD_DIR}}
+
+    - name: Configure CMake
+      # Use a bash shell so we can use the same syntax for environment variable
+      # access regardless of the host operating system.
+      shell: bash
+      working-directory: ${{env.BUILD_DIR}}
+      run: cmake -S $SOURCE_DIR -B $BUILD_DIR -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DWARNINGS_AS_ERRORS=ON
+
+    - name: Build
+      working-directory: ${{env.BUILD_DIR}}
+      shell: bash
+      # Execute the build.  You can specify a specific target with "--target <NAME>".
+      run: cmake --build . --config ${{matrix.build_type}}
+
+    - name: Test
+      working-directory: ${{env.BUILD_DIR}}
+      shell: bash
+      # Execute tests defined by the CMake configuration.
+      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
+      run: ctest -C ${{ matrix.build_type }}
