@@ -10,6 +10,16 @@ include(CheckTypeSize)
 set(graphics sdl2 CACHE STRING "Graphics Engine")
 set_property(CACHE graphics PROPERTY STRINGS pure opengl sdl2)
 
+if(${graphics} STREQUAL sdl2)
+    find_package(SDL2 REQUIRED)
+elseif(${graphics} STREQUAL opengl)
+    message(FATAL_ERROR "TODO: Graphics option 'opengl' not yet implemented")
+elseif(${graphics} STREQUAL pure)
+    message(FATAL_ERROR "TODO: Graphics option 'pure' not yet implemented")
+else()
+    message(FATAL_ERROR "Invalid graphics option: ${graphics}")
+endif()
+
 set(sound mixsdl CACHE STRING "Sound backend")
 set_property(CACHE sound PROPERTY STRINGS mixsdl openal)
 
