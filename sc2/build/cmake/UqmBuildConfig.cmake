@@ -90,7 +90,4 @@ check_type_size(_Bool   _BOOL)
 configure_file(${PROJECT_SOURCE_DIR}/sc2/src/config_cmake.h.in
                ${PROJECT_BINARY_DIR}/sc2/src/config_cmake.h)
 
-# CMake will generate config_cmake.h out-of-source, so add the output
-# directory as an include directory.
-include_directories(${PROJECT_BINARY_DIR}/sc2/src)
 

@@ -1,3 +1,2 @@
 # add_executable(uqm uqm.c)
-# # CMAKE tells config.h to use CMake-generated build config.
-# target_compile_definitions(uqm PRIVATE CMAKE)
+# target_link_libraries(uqm PRIVATE libs uqm_options)
