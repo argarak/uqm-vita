@@ -59,7 +59,7 @@ extern "C" {
 	/* 64-bit platforms */
 #	define UQM_INT16   short
 #	define UQM_INT32   int
-#	ifdef _MSC_VER
+#	ifdef WIN32
 #		define UQM_INT64   long long
 #	else
 #		define UQM_INT64   long
