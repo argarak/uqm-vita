@@ -1,0 +1,64 @@
+/* This file contains some compile-time configuration options for all
+ * targets when building with CMake.
+ * config_cmake.h is generated in the CMake from config_cmake.h.in by 
+ * UqmBuildConfig.cmake.
+ * The same template is used by all build toolchains and platforms when
+ * using CMake; OS-specific paths are set in UqmBuildConfig.cmake.
+ */
+
+#ifndef CONFIG_CMAKE_H_
+#define CONFIG_CMAKE_H_
+
+/* Directory where the UQM game data is located */
+#cmakedefine CONTENTDIR "@CONTENTDIR@"
+
+/* Directory where game data will be stored */
+//#define USERDIR "../userdata/"
+#cmakedefine USERDIR "@USERDIR@"
+
+/* Directory where config files will be stored */
+#define CONFIGDIR USERDIR
+
+/* Directory where supermelee teams will be stored */
+#cmakedefine MELEEDIR "@MELEEDIR@"
+
+/* Directory where save games will be stored */
+#cmakedefine SAVEDIR "@SAVEDIR@"
+
+/* Defined if words are stored with the most significant byte first */
+#cmakedefine WORDS_BIGENDIAN
+
+/* Defined if your system has readdir_r of its own */
+#cmakedefine HAVE_READDIR_R
+
+/* Defined if your system has setenv of its own */
+#cmakedefine HAVE_SETENV
+
+/* Defined if your system has strupr of its own */
+#cmakedefine HAVE_STRUPR
+
+/* Defined if your system has strcasecmp of its own */
+#cmakedefine HAVE_STRCASECMP_UQM
+		// Not using "HAVE_STRCASECMP" as that conflicts with SDL.
+
+/* Defined if your system has stricmp of its own */
+#cmakedefine HAVE_STRICMP
+
+/* Defined if your system has getopt_long */
+#cmakedefine HAVE_GETOPT_LONG
+
+/* Defined if your system has iswgraph of its own*/
+#cmakedefine HAVE_ISWGRAPH
+
+/* Defined if your system has wchar_t of its own */
+#cmakedefine HAVE_WCHAR_T
+
+/* Defined if your system has wint_t of its own */
+#cmakedefine HAVE_WINT_T
+
+/* Defined if your system has _Bool of its own */
+#cmakedefine HAVE__BOOL
+
+#endif  /* CONFIG_CMAKE_H_ */
+
+

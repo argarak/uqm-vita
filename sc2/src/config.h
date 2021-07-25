@@ -1,7 +1,9 @@
 /* This file contains some compile-time configuration options.
  */
 
-#ifdef _MSC_VER
+#ifdef CMAKE
+#	include "config_cmake.h"
+#elif defined(_MSC_VER)
 	/* In this case, build.sh is not run to generate a config file, so
 	 * we use a default file config_vc6.h instead.
 	 * If you want anything else than the defaults, you'll have to edit
