@@ -3,7 +3,8 @@
 # CMake build directory
 /build
 
-# VSCode settings directory
+# Editor/IDE settings directories
+.vs
 .vscode
 
 ## UQM v0.8.0 .gitignore:
