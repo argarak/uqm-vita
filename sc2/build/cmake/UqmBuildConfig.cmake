@@ -6,12 +6,19 @@ include(CheckTypeSize)
 # TODO: Actually act on these options
 # TODO: Put more thought into this file's organization and comments
 
+add_library(uqm_config_libs INTERFACE)
+
 # From build.config
 set(graphics sdl2 CACHE STRING "Graphics Engine")
 set_property(CACHE graphics PROPERTY STRINGS pure opengl sdl2)
 
 if(${graphics} STREQUAL sdl2)
     find_package(SDL2 REQUIRED)
+    # target_include_directories?
+    target_link_libraries(uqm_config_libs INTERFACE ${SDL2_LIBRARY})
+    set(UQM_CFLAGS ${UQM_CFLAGS} -DGFXMODULE_SDL -DSDL_DIR=SDL)
+    set(GFXMODULE sdl)
+    set(HAVE_OPENGL 0)
 elseif(${graphics} STREQUAL opengl)
     message(FATAL_ERROR "TODO: Graphics option 'opengl' not yet implemented")
 elseif(${graphics} STREQUAL pure)
@@ -99,5 +106,3 @@ check_type_size(_Bool   _BOOL)
 
 configure_file(${PROJECT_SOURCE_DIR}/sc2/src/config_cmake.h.in
                ${PROJECT_BINARY_DIR}/sc2/src/config_cmake.h)
-
-
