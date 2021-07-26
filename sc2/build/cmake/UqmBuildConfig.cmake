@@ -6,7 +6,7 @@ include(CheckTypeSize)
 # TODO: Actually act on these options
 # TODO: Put more thought into this file's organization and comments
 
-add_library(uqm_config_libs INTERFACE)
+add_library(uqm_lib_graphics INTERFACE)
 
 # From build.config
 set(graphics sdl2 CACHE STRING "Graphics Engine")
@@ -14,8 +14,7 @@ set_property(CACHE graphics PROPERTY STRINGS pure opengl sdl2)
 
 if(${graphics} STREQUAL sdl2)
     find_package(SDL2 REQUIRED)
-    # target_include_directories?
-    target_link_libraries(uqm_config_libs INTERFACE ${SDL2_LIBRARY})
+    target_link_libraries(uqm_lib_graphics INTERFACE SDL2::SDL2)
     set(UQM_CFLAGS ${UQM_CFLAGS} -DGFXMODULE_SDL -DSDL_DIR=SDL)
     set(GFXMODULE sdl)
     set(HAVE_OPENGL 0)
