@@ -7,6 +7,18 @@ include(CheckTypeSize)
 # TODO: Put more thought into this file's organization and comments
 
 add_library(uqm_lib_graphics INTERFACE)
+add_library(uqm_lib_threadlib INTERFACE)
+
+add_library(uqm_libs_external INTERFACE)
+target_link_libraries(uqm_libs_external INTERFACE uqm_lib_graphics
+                                                  uqm_lib_threadlib)
+
+# Preprocessor define targets
+add_library(uqm_defines_common INTERFACE)
+add_library(uqm_defines_c INTERFACE)
+add_library(uqm_defines_cxx INTERFACE)
+target_link_libraries(uqm_defines_c INTERFACE uqm_defines_common)
+target_link_libraries(uqm_defines_cxx INTERFACE uqm_defines_common)
 
 # From build.config
 set(graphics sdl2 CACHE STRING "Graphics Engine")
@@ -15,7 +27,7 @@ set_property(CACHE graphics PROPERTY STRINGS pure opengl sdl2)
 if(${graphics} STREQUAL sdl2)
     find_package(SDL2 REQUIRED)
     target_link_libraries(uqm_lib_graphics INTERFACE SDL2::SDL2)
-    set(UQM_CFLAGS ${UQM_CFLAGS} -DGFXMODULE_SDL -DSDL_DIR=SDL)
+    target_compile_definitions(uqm_defines_c INTERFACE GFXMODULE_SDL SDL_DIR=SDL)
     set(GFXMODULE sdl)
     set(HAVE_OPENGL 0)
 elseif(${graphics} STREQUAL opengl)
@@ -49,6 +61,17 @@ set_property(CACHE ioformat PROPERTY STRINGS asm plainc)
 
 set(threadlib sdl CACHE STRING "Thread library")
 set_property(CACHE ioformat PROPERTY STRINGS sdl pthread)
+if(${threadlib} STREQUAL sdl)
+    find_package(SDL2 REQUIRED)
+    target_link_libraries(uqm_lib_threadlib INTERFACE SDL2::SDL2)
+    target_compile_definitions(uqm_defines_common INTERFACE THREADLIB_SDL)
+    set(THREADLIB SDL)
+elseif(${threadlib} STREQUAL pthread)
+    target_compile_definitions(uqm_defines_common INTERFACE THREADLIB_PTHREAD)
+    set(THREADLIB PTHREAD)
+else()
+    message(FATAL_ERROR "Invalid thread library option: ${threadlib}")
+endif()
 
 # TODO: "install_prefix" is a CMake thing. Maybe don't use these names?
 set(install_prefix      "/usr/local/games"  CACHE STRING "Installation prefix")

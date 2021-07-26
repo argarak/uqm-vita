@@ -1,0 +1,2 @@
+add_library(uqm_sdlthreads sdlthreads.c sdlthreads.h)
+target_link_libraries(uqm_sdlthreads PRIVATE uqm_options uqm_lib_threadlib)
