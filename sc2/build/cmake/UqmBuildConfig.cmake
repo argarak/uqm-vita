@@ -123,8 +123,14 @@ check_symbol_exists(stricmp     "string.h"  HAVE_STRICMP)
 check_symbol_exists(getopt_long "getopt.h"  HAVE_GETOPT_LONG)
 check_symbol_exists(iswgraph    "wctype.h"  HAVE_ISWGRAPH)
 check_type_size(wchar_t WCHAR_T)
-check_type_size(wint_t  WINT_T)
 check_type_size(_Bool   _BOOL)
+
+# check_type_size(wint_t  WINT_T)
+# FIXME This check does not seem to work reliably on all platforms, and I
+# couldn't find a check that does with some modest effort.  Because wint_t
+# is required by the C standard I'm not going to lose any sleep over failing
+# to accomodate systems that don't have it for some reason.
+set(HAVE_WINT_T TRUE)
 
 configure_file(${PROJECT_SOURCE_DIR}/sc2/src/config_cmake.h.in
                ${PROJECT_BINARY_DIR}/sc2/src/config_cmake.h)
