@@ -11,8 +11,12 @@
 #	elif defined(_IA64_)
 #		define _M_IA64
 #	elif defined(__amd64__)
-#		define _M_AMD64
-#		define _M_X64
+#		ifndef _M_AMD64
+#			define _M_AMD64
+#		endif
+#		ifndef _M_X64
+#			define _M_X64
+#		endif
 #	elif defined(__m68k__)
 #		define _68K_
 #	elif defined(__ppc__)
@@ -29,7 +33,9 @@
 #	define inline __inline__
 #	ifdef __MINGW32__
 		// For when including Microsoft Windows header files.
-#		define _inline inline
+#		ifndef _inline
+#			define _inline inline
+#		endif
 #	endif
 #endif
 
@@ -102,8 +108,12 @@ int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
 // Directories
 #ifdef WIN32
 #	include <stdlib.h>
-#	define PATH_MAX  _MAX_PATH
-#	define NAME_MAX  _MAX_FNAME
+#	ifndef PATH_MAX
+#		define PATH_MAX  _MAX_PATH
+#	endif
+#	ifndef NAME_MAX
+#		define NAME_MAX  _MAX_FNAME
+#	endif
 		// _MAX_DIR and FILENAME_MAX could also be candidates.
 		// If anyone can tell me which one matches NAME_MAX, please
 		// let me know. - SvdB
