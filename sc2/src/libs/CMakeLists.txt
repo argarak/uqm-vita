@@ -1,6 +1,7 @@
 add_subdirectory(callback)
 add_subdirectory(file)
 add_subdirectory(graphics)
+add_subdirectory(input)
 add_subdirectory(log)
 add_subdirectory(memory)
 add_subdirectory(resource)
@@ -13,6 +14,7 @@ add_library(libs INTERFACE)
 target_link_libraries(libs INTERFACE uqm_callback
                                      uqm_file
                                      uqm_graphics
+                                     uqm_input
                                      uqm_log
                                      uqm_memory
                                      uqm_resource
