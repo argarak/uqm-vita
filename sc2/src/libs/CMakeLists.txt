@@ -13,6 +13,7 @@ add_subdirectory(task)
 add_subdirectory(threads)
 add_subdirectory(time)
 add_subdirectory(uio)
+add_subdirectory(video)
 
 add_library(libs INTERFACE)
 target_link_libraries(libs INTERFACE uqm_callback
@@ -29,4 +30,5 @@ target_link_libraries(libs INTERFACE uqm_callback
                                      uqm_task
                                      uqm_threads
                                      uqm_time
-                                     uqm_uio)
+                                     uqm_uio
+                                     uqm_video)
