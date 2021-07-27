@@ -29,7 +29,9 @@
 #else
 # ifndef allocax           /* predefined by HP cc +Olibcalls */
 #  ifdef __GNUC__
-#   define alloca(size) __builtin_alloca (size)
+#   ifndef alloca
+#    define alloca(size) __builtin_alloca (size)
+#   endif
 #  else
 #   if HAVE_ALLOCA_H
 #    include <alloca.h>
