@@ -1,3 +1,4 @@
+add_subdirectory(regex)
 add_subdirectory(libs)
 add_subdirectory(uqm)
 
