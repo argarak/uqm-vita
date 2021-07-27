@@ -7,6 +7,7 @@ include(CheckTypeSize)
 # TODO: Put more thought into this file's organization and comments
 
 add_library(uqm_lib_graphics INTERFACE)
+add_library(uqm_lib_sdl INTERFACE)
 add_library(uqm_lib_threadlib INTERFACE)
 
 add_library(uqm_libs_external INTERFACE)
@@ -27,6 +28,7 @@ set_property(CACHE graphics PROPERTY STRINGS pure opengl sdl2)
 if(${graphics} STREQUAL sdl2)
     find_package(SDL2 REQUIRED)
     target_link_libraries(uqm_lib_graphics INTERFACE SDL2::SDL2)
+    target_link_libraries(uqm_lib_sdl INTERFACE SDL2::SDL2)
     target_compile_definitions(uqm_defines_c INTERFACE GFXMODULE_SDL SDL_DIR=SDL)
     set(GFXMODULE sdl)
     set(HAVE_OPENGL 0)
