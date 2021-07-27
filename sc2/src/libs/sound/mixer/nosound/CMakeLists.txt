@@ -1,0 +1,2 @@
+add_library(uqm_sound_mixer_nosound audiodrv_nosound.c audiodrv_nosound.h)
+target_link_libraries(uqm_sound_mixer_nosound PRIVATE uqm_options)

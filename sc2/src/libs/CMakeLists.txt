@@ -5,6 +5,7 @@ add_subdirectory(input)
 add_subdirectory(log)
 add_subdirectory(memory)
 add_subdirectory(resource)
+add_subdirectory(sound)
 add_subdirectory(task)
 add_subdirectory(threads)
 add_subdirectory(time)
@@ -18,6 +19,7 @@ target_link_libraries(libs INTERFACE uqm_callback
                                      uqm_log
                                      uqm_memory
                                      uqm_resource
+                                     uqm_sound
                                      uqm_task
                                      uqm_threads
                                      uqm_time

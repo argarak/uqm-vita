@@ -1,0 +1,2 @@
+add_library(uqm_sound_mixer_sdl audiodrv_sdl.c audiodrv_sdl.h)
+target_link_libraries(uqm_sound_mixer_sdl PRIVATE uqm_options uqm_lib_sdl)
