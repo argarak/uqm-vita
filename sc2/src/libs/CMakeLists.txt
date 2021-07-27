@@ -3,6 +3,7 @@ add_subdirectory(file)
 add_subdirectory(graphics)
 add_subdirectory(input)
 add_subdirectory(log)
+add_subdirectory(math)
 add_subdirectory(memory)
 add_subdirectory(resource)
 add_subdirectory(sound)
@@ -18,6 +19,7 @@ target_link_libraries(libs INTERFACE uqm_callback
                                      uqm_graphics
                                      uqm_input
                                      uqm_log
+                                     uqm_math
                                      uqm_memory
                                      uqm_resource
                                      uqm_sound
