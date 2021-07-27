@@ -94,7 +94,9 @@ typedef unsigned char   UBYTE;      /* 1 byte, unsigned */
 typedef signed short    SWORD;      /* 2 bytes, signed */
 typedef unsigned short  UWORD;      /* 2 bytes, unsigned */
 typedef signed int      SLONG;      /* 4 bytes, signed */
+#ifndef WIN32
 typedef unsigned int    ULONG;      /* 4 bytes, unsigned */
+#endif /* WIN32 */
 typedef int             BOOL;       /* 0=false, <>0 true */
 
 #else
