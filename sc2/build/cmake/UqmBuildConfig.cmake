@@ -161,5 +161,11 @@ check_type_size(_Bool   _BOOL)
 # to accomodate systems that don't have it for some reason.
 set(HAVE_WINT_T TRUE)
 
+check_symbol_exists(WIN32 "" MACRO_WIN32)
+check_symbol_exists(__MINGW32__ "" MACRO___MINGW32__)
+if (MACRO_WIN32)
+    set(USE_WINSOCK 1)
+endif()
+
 configure_file(${PROJECT_SOURCE_DIR}/sc2/src/config_cmake.h.in
                ${PROJECT_BINARY_DIR}/sc2/src/config_cmake.h)
