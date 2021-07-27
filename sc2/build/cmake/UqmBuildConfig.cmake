@@ -69,6 +69,18 @@ set_property(CACHE joystick PROPERTY STRINGS enabled disabled)
 
 set(netplay full CACHE STRING "Network Supermelee support")
 set_property(CACHE netplay PROPERTY STRINGS none full ipv4)
+if(${netplay} STREQUAL none)
+    # Do nothing
+elseif(${netplay} STREQUAL full)
+    set(NETPLAY FULL)
+    target_compile_definitions(uqm_defines_common INTERFACE NETPLAY=NETPLAY_FULL)
+    # TODO "netlibs" library? "ws2_32"?
+elseif(${netplay} STREQUAL ipv4)
+    set(NETPLAY IPV4)
+    target_compile_definitions(uqm_defines_common INTERFACE NETPLAY=NETPLAY_IPV4)
+else()
+    message(FATAL_ERROR "Invalid netplay option: ${netplay}")
+endif()
 
 set(ioformat stdio_zip CACHE STRING "Supported file i/o methods")
 set_property(CACHE ioformat PROPERTY STRINGS stdio stdio_zip)
