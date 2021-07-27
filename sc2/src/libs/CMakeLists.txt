@@ -12,10 +12,10 @@ add_subdirectory(uio)
 add_library(libs INTERFACE)
 target_link_libraries(libs INTERFACE uqm_callback
                                      uqm_file
+                                     uqm_graphics
                                      uqm_log
                                      uqm_memory
                                      uqm_resource
-                                     uqm_sdl
                                      uqm_task
                                      uqm_threads
                                      uqm_time
