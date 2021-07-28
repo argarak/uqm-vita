@@ -19,6 +19,6 @@ add_library(uqm_netplay checkbuf.c checkbuf.h
                         packethandlers.c packethandlers.h
                         packetq.c packetq.h
                         packetsenders.c packetsenders.h
+                        $<TARGET_OBJECTS:uqm_netplay_proto>
                         )
-target_link_libraries(uqm_netplay PRIVATE uqm_options
-                                          uqm_netplay_proto)
+target_link_libraries(uqm_netplay PRIVATE uqm_options)

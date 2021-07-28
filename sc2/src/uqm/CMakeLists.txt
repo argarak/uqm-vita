@@ -91,9 +91,14 @@ add_library(uqm_game battle.c battle.h
                      weapon.c weapon.h
                      $<TARGET_OBJECTS:uqm_planets>
                      $<TARGET_OBJECTS:uqm_planets_generate>
+                     $<TARGET_OBJECTS:uqm_supermelee>
                      )
+
+if(NETPLAY)
+    target_sources(uqm_game PRIVATE $<TARGET_OBJECTS:uqm_netplay>
+                                    $<TARGET_OBJECTS:uqm_netplay_proto>)
+endif()
 
 target_link_libraries(uqm_game PRIVATE uqm_options
                                        uqm_comm
-                                       uqm_ships
-                                       uqm_supermelee)
+                                       uqm_ships)
