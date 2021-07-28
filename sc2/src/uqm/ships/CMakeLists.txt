@@ -1,0 +1,59 @@
+add_subdirectory(androsyn)
+add_subdirectory(arilou)
+add_subdirectory(blackurq)
+add_subdirectory(chenjesu)
+add_subdirectory(chmmr)
+add_subdirectory(druuge)
+add_subdirectory(human)
+add_subdirectory(ilwrath)
+add_subdirectory(lastbat)
+add_subdirectory(melnorme)
+add_subdirectory(mmrnmhrm)
+add_subdirectory(mycon)
+add_subdirectory(orz)
+add_subdirectory(pkunk)
+add_subdirectory(probe)
+add_subdirectory(shofixti)
+add_subdirectory(sis_ship)
+add_subdirectory(slylandr)
+add_subdirectory(spathi)
+add_subdirectory(supox)
+add_subdirectory(syreen)
+add_subdirectory(thradd)
+add_subdirectory(umgah)
+add_subdirectory(urquan)
+add_subdirectory(utwig)
+add_subdirectory(vux)
+add_subdirectory(yehat)
+add_subdirectory(zoqfot)
+
+add_library(uqm_ships INTERFACE ship.h)
+target_link_libraries(uqm_ships INTERFACE uqm_ships_androsyn
+                                          uqm_ships_arilou
+                                          uqm_ships_blackurq
+                                          uqm_ships_chenjesu
+                                          uqm_ships_chmmr
+                                          uqm_ships_druuge
+                                          uqm_ships_human
+                                          uqm_ships_ilwrath
+                                          uqm_ships_lastbat
+                                          uqm_ships_melnorme
+                                          uqm_ships_mmrnmhrm
+                                          uqm_ships_mycon
+                                          uqm_ships_orz
+                                          uqm_ships_pkunk
+                                          uqm_ships_probe
+                                          uqm_ships_shofixti
+                                          uqm_ships_sis_ship
+                                          uqm_ships_slylandr
+                                          uqm_ships_spathi
+                                          uqm_ships_supox
+                                          uqm_ships_syreen
+                                          uqm_ships_thradd
+                                          uqm_ships_umgah
+                                          uqm_ships_urquan
+                                          uqm_ships_utwig
+                                          uqm_ships_vux
+                                          uqm_ships_yehat
+                                          uqm_ships_zoqfot
+                                          )

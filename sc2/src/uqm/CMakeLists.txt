@@ -1,5 +1,6 @@
 add_subdirectory(comm)
 add_subdirectory(planets)
+add_subdirectory(ships)
 add_subdirectory(supermelee)
 
 add_library(uqm_game battle.c battle.h
@@ -92,4 +93,5 @@ add_library(uqm_game battle.c battle.h
 target_link_libraries(uqm_game PRIVATE uqm_options
                                        uqm_comm
                                        uqm_planets
+                                       uqm_ships
                                        uqm_supermelee)
