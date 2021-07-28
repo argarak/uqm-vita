@@ -3,6 +3,7 @@
     "version-string": "0.8.0",
     "dependencies": [
         "libpng",
-        "sdl2"
+        "sdl2",
+        "libvorbis"
     ]
 }
