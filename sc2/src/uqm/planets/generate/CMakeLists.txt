@@ -29,4 +29,4 @@ add_library(uqm_planets_generate genall.h
                                  genzfpscout.c
                                  genzoq.c
                                  )
-target_link_libraries(uqm_planets_generate PRIVATE uqm_options)
+target_link_libraries(uqm_planets_generate OBJECT uqm_options)

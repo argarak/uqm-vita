@@ -88,10 +88,12 @@ add_library(uqm_game battle.c battle.h
                      uqmdebug.c uqmdebug.h
                      util.c util.h
                      velocity.c velocity.h
-                     weapon.c weapon.h)
+                     weapon.c weapon.h
+                     $<TARGET_OBJECTS:uqm_planets>
+                     $<TARGET_OBJECTS:uqm_planets_generate>
+                     )
 
 target_link_libraries(uqm_game PRIVATE uqm_options
                                        uqm_comm
-                                       uqm_planets
                                        uqm_ships
                                        uqm_supermelee)

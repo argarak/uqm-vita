@@ -21,6 +21,6 @@ add_library(uqm_planets calc.c
                         solarsys.c solarsys.h
                         sundata.h
                         surface.c
+                        $<TARGET_OBJECTS:uqm_planets_generate>
                         )
-target_link_libraries(uqm_planets PRIVATE uqm_options
-                                          uqm_planets_generate)
+target_link_libraries(uqm_planets OBJECT uqm_options)
