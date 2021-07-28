@@ -1,9 +1,5 @@
 add_subdirectory(stdio)
 
-if(USE_ZIP_IO)
-    add_subdirectory(zip)
-endif()
-
 add_library(uqm_uio charhashtable.c charhashtable.h
                     defaultfs.c defaultfs.h
                     fileblock.c fileblock.h
@@ -24,7 +20,12 @@ add_library(uqm_uio charhashtable.c charhashtable.h
                     uiostream.c uiostream.h
                     uioutils.c uioutils.h
                     utils.c utils.h)
-target_link_libraries(uqm_uio PRIVATE uqm_options regex)
+target_link_libraries(uqm_uio PRIVATE uqm_options uqm_uio_stdio regex)
+
+if(USE_ZIP_IO)
+    add_subdirectory(zip)
+    target_link_libraries(uqm_uio PRIVATE uqm_uio_zip)
+endif()
 
 # TODO I'm not sure how these actually get set in the original build system
 if(DEBUG OR uqm_UIO_DEBUG)
