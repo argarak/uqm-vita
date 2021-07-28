@@ -35,7 +35,9 @@ extern "C" {
 
 #include <stdarg.h>
 #if defined(__OS2__)||defined(__EMX__)||defined(WIN32)||defined(WIN64)
-#define strcasecmp(s,t) stricmp(s,t)
+#ifndef strcasecmp
+#	define strcasecmp(s,t) stricmp(s,t)
+#endif /* strcasecmp */
 #endif
 
 #define MIKMOD_INTERNAL
