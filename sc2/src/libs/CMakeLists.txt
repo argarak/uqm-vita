@@ -1,4 +1,5 @@
 add_subdirectory(callback)
+add_subdirectory(decomp)
 add_subdirectory(file)
 add_subdirectory(graphics)
 add_subdirectory(input)
@@ -17,6 +18,7 @@ add_subdirectory(video)
 
 add_library(libs INTERFACE)
 target_link_libraries(libs INTERFACE uqm_callback
+                                     uqm_decomp
                                      uqm_file
                                      uqm_graphics
                                      uqm_input
