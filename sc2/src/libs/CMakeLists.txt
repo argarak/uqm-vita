@@ -2,6 +2,7 @@ add_subdirectory(callback)
 add_subdirectory(decomp)
 add_subdirectory(file)
 add_subdirectory(graphics)
+add_subdirectory(heap)
 add_subdirectory(input)
 add_subdirectory(log)
 add_subdirectory(math)
@@ -21,6 +22,7 @@ target_link_libraries(libs INTERFACE uqm_callback
                                      uqm_decomp
                                      uqm_file
                                      uqm_graphics
+                                     uqm_heap
                                      uqm_input
                                      uqm_log
                                      uqm_math
