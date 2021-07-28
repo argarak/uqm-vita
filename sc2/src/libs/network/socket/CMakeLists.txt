@@ -1,4 +1,4 @@
-add_library(uqm_network_socket socket.c socket.h)
+add_library(uqm_network_socket OBJECT socket.c socket.h)
 
 if(USE_WINSOCK)
     target_sources(uqm_network_socket PRIVATE socket_win.c socket_win.h)

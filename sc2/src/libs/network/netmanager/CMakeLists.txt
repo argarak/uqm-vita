@@ -1,7 +1,7 @@
-add_library(uqm_network_netmanager ndesc.c ndesc.h
-                                   ndindex.ci
-                                   netmanager_common.ci
-                                   netmanager.h)
+add_library(uqm_network_netmanager OBJECT ndesc.c ndesc.h
+                                          ndindex.ci
+                                          netmanager_common.ci
+                                          netmanager.h)
 
 if(USE_WINSOCK)
     target_sources(uqm_network_netmanager PRIVATE netmanager_win.c netmanager_win.h)
