@@ -15,6 +15,11 @@ target_link_libraries(uqm_libs_external INTERFACE uqm_lib_sdl
                                                   uqm_lib_vorbis
                                                   uqm_lib_threadlib)
 
+# SDL applications need to be linked with a special SDL target which provides
+# a WinMain function on Windows. This target is an alias for the appropriate
+# library target from either SDL1 or SDL2.
+add_library(uqm_sdlmain INTERFACE)
+
 # Preprocessor define targets
 add_library(uqm_defines_common INTERFACE)
 add_library(uqm_defines_c INTERFACE)
@@ -29,6 +34,7 @@ set_property(CACHE graphics PROPERTY STRINGS pure opengl sdl2)
 if(${graphics} STREQUAL sdl2)
     find_package(SDL2 REQUIRED)
     target_link_libraries(uqm_lib_sdl INTERFACE SDL2::SDL2)
+    target_link_libraries(uqm_sdlmain INTERFACE SDL2::SDL2main)
     target_compile_definitions(uqm_defines_c INTERFACE GFXMODULE_SDL SDL_DIR=SDL)
     set(GFXMODULE sdl)
     set(HAVE_OPENGL 0)
