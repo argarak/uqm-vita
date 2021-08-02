@@ -68,7 +68,9 @@ typedef void (*ResolveErrorCallback)(ResolveState *resolveState,
 #ifdef USE_WINSOCK
 #	include <winsock2.h>
 #	include <ws2tcpip.h>
-#	include "../wspiapiwrap.h"
+#	ifdef __MINW32__
+#		include "../wspiapiwrap.h"
+#	endif
 #else  /* !defined(USE_WINSOCK) */
 #	include <netdb.h>
 #endif /* !defined(USE_WINSOCK) */
