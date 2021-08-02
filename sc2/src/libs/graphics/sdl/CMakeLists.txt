@@ -24,7 +24,7 @@ add_library(uqm_sdl 2xscalers.c 2xscalers.h
                     sdluio.c sdluio.h
                     triscan2x.c)
 find_package(PNG REQUIRED)
-# uqm_lib_graphics will include the library and headers for whichever
+# uqm_lib_sdl will include the library and headers for whichever
 # SDL was selected by the "graphics" option in UqmBuildConfig.cmake.
 # TODO: Test other options besides SDL2
-target_link_libraries(uqm_sdl PRIVATE uqm_options uqm_lib_graphics PNG::PNG)
+target_link_libraries(uqm_sdl PRIVATE uqm_options uqm_lib_sdl PNG::PNG)
