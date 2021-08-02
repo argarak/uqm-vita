@@ -15,3 +15,10 @@ target_compile_definitions(uqm_options INTERFACE CMAKE)
 target_link_libraries(uqm_options INTERFACE uqm_defines_c)
 
 add_subdirectory(src)
+
+# This is the actual UQM game executable.
+add_executable(uqm $<TARGET_OBJECTS:uqm_src_files>)
+target_link_libraries(uqm PRIVATE uqm_game libs uqm_libs_external uqm_sdlmain uqm_options)
+if(NOT HAVE_GETOPT_LONG)
+    target_link_libraries(uqm PRIVATE uqm_getopt)
+endif()
