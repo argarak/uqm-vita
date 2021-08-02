@@ -10,3 +10,8 @@ add_subdirectory(uqm)
 #                    uqm.c
 #                    uqmversion.h)
 # target_link_libraries(uqm PRIVATE uqm_game libs uqm_libs_external uqm_options)
+
+if(NOT HAVE_GETOPT_LONG)
+    add_subdirectory(getopt)
+    # target_link_libraries(uqm PRIVATE uqm_getopt)
+endif()
