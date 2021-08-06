@@ -1,7 +1,8 @@
 
 
-# CMake build directory
+# CMake local files
 /build
+/CMakeUserPresets.json
 
 # Editor/IDE settings directories
 .vs
