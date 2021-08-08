@@ -35,7 +35,7 @@ jobs:
       # access regardless of the host operating system.
       shell: bash
       working-directory: ${{env.BUILD_DIR}}
-      run: cmake -S $SOURCE_DIR -B $BUILD_DIR -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DGIT_SUBMODULE=ON
+      run: cmake -S $SOURCE_DIR -B $BUILD_DIR -DCMAKE_BUILD_TYPE=${{matrix.build_type}} -DUSE_VCPKG=ON -DGIT_SUBMODULE=ON
 
     - name: Build
       working-directory: ${{env.BUILD_DIR}}
