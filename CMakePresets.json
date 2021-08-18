@@ -7,36 +7,97 @@
     },
     "configurePresets": [
         {
-            "name": "default",
+            "name": "uqm-base",
+            "hidden": true,
+            "displayName": "Base for other presets to inherit",
+            "generator": "Ninja",
+            "binaryDir": "${sourceDir}/build/${presetName}"
+        },
+        {
+            "name": "uqm-default",
+            "inherits": "uqm-base",
             "displayName": "Default Config",
             "description": "Default build using Ninja generator",
-            "generator": "Ninja",
-            "binaryDir": "${sourceDir}/build/default",
+            "generator": "Ninja"
+        },
+        {
+            "name": "uqm-vcpkg",
+            "hidden": true,
+            "inherits": "uqm-base",
             "cacheVariables": {
                 "GIT_SUBMODULE": {
                     "type": "BOOL",
                     "value": "ON"
+                },
+                "USE_VCPKG": {
+                    "type": "BOOL",
+                    "value": "ON"
+                }
+            }
+        },
+        {
+            "name": "uqm-vs2019",
+            "hidden": true,
+            "inherits": "uqm-vcpkg",
+            "generator": "Visual Studio 16 2019"
+        },
+        {
+            "name": "uqm-vs2019-x86",
+            "inherits": "uqm-vs2019",
+            "displayName": "Visual Studio 2019 x86",
+            "description": "Visual Studio x86 build",
+            "architecture": "Win32"
+        },
+        {
+            "name": "uqm-msys2-mingw32",
+            "inherits": "uqm-default",
+            "displayName": "MSYS2 MinGW32",
+            "description": "MSYS2 MinGW32 build (run in MSYS2 MinGW 32-bit shell)",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "i686-w64-mingw32-gcc.exe",
+                "USE_VCPKG": {
+                    "type": "BOOL",
+                    "value": "OFF"
                 }
             }
         }
     ],
     "buildPresets": [
         {
-            "name": "default",
-            "configurePreset": "default"
-        }
-    ],
-    "testPresets": [
+            "name": "uqm-msys2-mingw32-debug",
+            "configurePreset": "uqm-msys2-mingw32",
+            "displayName": "MSYS2 MinGW32 Debug",
+            "configuration": "Debug",
+            "targets": [
+                "uqm"
+            ]
+        },
         {
-            "name": "default",
-            "configurePreset": "default",
-            "output": {
-                "outputOnFailure": true
-            },
-            "execution": {
-                "noTestsAction": "error",
-                "stopOnFailure": true
-            }
+            "name": "uqm-msys2-mingw32-release",
+            "configurePreset": "uqm-msys2-mingw32",
+            "displayName": "MSYS2 MinGW32 Release",
+            "configuration": "Release",
+            "targets": [
+                "uqm"
+            ]
+        },
+        {
+            "name": "uqm-vs2019-x86-debug",
+            "configurePreset": "uqm-vs2019-x86",
+            "displayName": "Visual Studio 2019 x86 Debug build",
+            "configuration": "Debug",
+            "targets": [
+                "uqm"
+            ]
+        },
+        {
+            "name": "uqm-vs2019-x86-release",
+            "configurePreset": "uqm-vs2019-x86",
+            "displayName": "Visual Studio 2019 x86 Release build",
+            "configuration": "Release",
+            "targets": [
+                "uqm"
+            ]
         }
     ]
 }
