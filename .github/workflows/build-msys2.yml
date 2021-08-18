@@ -1,0 +1,53 @@
+name: MSYS2 Build
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ${{matrix.preset.os}}
+    defaults:
+      run:
+        shell: msys2 {0}
+    strategy:
+      fail-fast: false
+      matrix:
+        preset:
+        - { os: windows-2019, configure: uqm-msys2-mingw32, build: uqm-msys2-mingw32-debug }
+        - { os: windows-2019, configure: uqm-msys2-mingw32, build: uqm-msys2-mingw32-release }
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - uses: msys2/setup-msys2@v2
+      with:
+        msystem: MSYS
+        update: true
+        install: |
+          cmake
+          mingw-w64-i686-gcc
+          mingw-w64-i686-libogg
+          mingw-w64-i686-libpng
+          mingw-w64-i686-libsystre
+          mingw-w64-i686-libvorbis
+          mingw-w64-i686-SDL2
+          mingw-w64-i686-zlib
+          ninja
+          pkg-config
+
+    - name: Configure CMake
+      working-directory: ${{github.workspace}}
+      run: |
+        set MSYSTEM=MINGW32
+        export PATH=/mingw32/bin:$PATH
+        export PKG_CONFIG_PATH=/mingw32/lib/pkgconfig:/mingw32/share/pkgconfig
+        which cmake
+        cmake --version
+        cmake --preset ${{matrix.preset.configure}}
+
+    - name: Build
+      working-directory: ${{github.workspace}}
+      run: |
+        set MSYSTEM=MINGW32
+        export PATH=/mingw32/bin:$PATH
+        export PKG_CONFIG_PATH=/mingw32/lib/pkgconfig:/mingw32/share/pkgconfig
+        cmake --build --preset ${{matrix.preset.build}}
