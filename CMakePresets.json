@@ -10,7 +10,6 @@
             "name": "uqm-base",
             "hidden": true,
             "displayName": "Base for other presets to inherit",
-            "generator": "Ninja",
             "binaryDir": "${sourceDir}/build/${presetName}"
         },
         {
@@ -36,6 +35,24 @@
             }
         },
         {
+            "name": "uqm-make-gcc",
+            "inherits": "uqm-vcpkg",
+            "generator": "Unix Makefiles",
+            "displayName": "GCC Makefiles build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "gcc"
+            }
+        },
+        {
+            "name": "uqm-make-clang",
+            "inherits": "uqm-vcpkg",
+            "generator": "Unix Makefiles",
+            "displayName": "Clang Makefiles build",
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "clang"
+            }
+        },
+        {
             "name": "uqm-vs2019",
             "hidden": true,
             "inherits": "uqm-vcpkg",
@@ -53,6 +70,7 @@
             "inherits": "uqm-default",
             "displayName": "MSYS2 MinGW32",
             "description": "MSYS2 MinGW32 build (run in MSYS2 MinGW 32-bit shell)",
+            "generator": "Ninja",
             "cacheVariables": {
                 "CMAKE_C_COMPILER": "i686-w64-mingw32-gcc.exe",
                 "USE_VCPKG": {
@@ -76,6 +94,42 @@
             "name": "uqm-msys2-mingw32-release",
             "configurePreset": "uqm-msys2-mingw32",
             "displayName": "MSYS2 MinGW32 Release",
+            "configuration": "Release",
+            "targets": [
+                "uqm"
+            ]
+        },
+        {
+            "name": "uqm-gcc-make-debug",
+            "configurePreset": "uqm-make-gcc",
+            "displayName": "GCC Makefiles Debug",
+            "configuration": "Debug",
+            "targets": [
+                "uqm"
+            ]
+        },
+        {
+            "name": "uqm-gcc-make-release",
+            "configurePreset": "uqm-make-gcc",
+            "displayName": "GCC Makefiles Release",
+            "configuration": "Release",
+            "targets": [
+                "uqm"
+            ]
+        },
+        {
+            "name": "uqm-clang-make-debug",
+            "configurePreset": "uqm-make-clang",
+            "displayName": "Clang Makefiles Debug",
+            "configuration": "Debug",
+            "targets": [
+                "uqm"
+            ]
+        },
+        {
+            "name": "uqm-clang-make-release",
+            "configurePreset": "uqm-make-clang",
+            "displayName": "Clang Makefiles Release",
             "configuration": "Release",
             "targets": [
                 "uqm"
