@@ -1,10 +1,9 @@
-
-
 # CMake local files
 /build
 /CMakeUserPresets.json
 
 # Editor/IDE settings directories
+.idea
 .vs
 .vscode
 
