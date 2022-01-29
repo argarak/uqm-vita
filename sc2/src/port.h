@@ -133,7 +133,11 @@ int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
 		 * This is relevant (at least) for Solaris.
 		 */
 #	ifndef NAME_MAX
-#		define NAME_MAX _POSIX_NAME_MAX
+#   ifdef VITA
+#     define NAME_MAX 16 // guess because i don't know!
+#   else
+#		  define NAME_MAX _POSIX_NAME_MAX
+#   endif
 #	endif
 #endif
 
@@ -149,6 +153,9 @@ typedef unsigned short mode_t;
 #	define MKDIR(name, mode) ((void) mode, _mkdir(name))
 #elif defined(__MINGW32__)
 #	define MKDIR(name, mode) ((void) mode, mkdir(name))
+#elif defined(VITA)
+#  include <psp2/io/stat.h>
+#  define MKDIR sceIoMkdir
 #else
 #	define MKDIR mkdir
 #endif
@@ -499,7 +506,9 @@ typedef unsigned int wint_t;
 
 // Use SDL_INCLUDE to portably include the SDL files from the right location.
 // The SDL_DIR definition is provided by the build configuration.
-#define SDL_INCLUDE(file) #file
+#define XSTR(x) STR(x)
+#define STR(x) #x
+#define SDL_INCLUDE(file) XSTR(SDL_DIR/file)
 
 // Mark a function as using printf-style function arguments, so that
 // extra consistency checks can be made by the compiler.

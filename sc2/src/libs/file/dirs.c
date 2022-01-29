@@ -242,6 +242,8 @@ getHomeDir (void)
 {
 #ifdef WIN32
 	return getenv ("HOME");
+#elif defined(VITA)
+  return "ux0:/data";
 #else
 	const char *home;
 	struct passwd *pw;
@@ -747,12 +749,16 @@ expandPathAbsolute (char *dest, size_t destLen, const char *src,
 	else
 #endif  /* HAVE_DRIVE_LETTERS */
 	{
-		// Relative dir
+    #ifdef VITA
+    return NULL;
+    #else
+    // Relative dir
 		if (getcwd (dest, destLen) == NULL)
 		{
 			// errno is set
 			return NULL;
 		}
+    #endif
 	}
 
 	{

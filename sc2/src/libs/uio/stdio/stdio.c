@@ -306,8 +306,14 @@ stdio_rmdir(uio_PDirHandle *pDirHandle, const char *name) {
 		// errno is set
 		return -1;
 	}
-	
-	result = rmdir(path);
+
+  #ifdef VITA
+  #include <psp2/io/stat.h>
+  result = sceIoRmdir(path);
+  #else
+  result = rmdir(path);
+  #endif
+
 	if (result == -1) {
 		int savedErrno = errno;
 		uio_free(path);

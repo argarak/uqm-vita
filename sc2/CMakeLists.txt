@@ -22,7 +22,7 @@ add_executable(uqm $<TARGET_OBJECTS:uqm_src_files>)
 # Some linkers are sensitive to the order of the inputs - we have to list _first_ mingw32
 # (if applicable), _then_ SDLmain, _then_ SDL.
 if(MINGW)
-    target_link_libraries(uqm PRIVATE mingw32)
+  target_link_libraries(uqm PRIVATE mingw32)
 endif()
 target_link_libraries(uqm PRIVATE uqm_game libs uqm_sdlmain uqm_libs_external uqm_options)
 if(NOT HAVE_GETOPT_LONG)

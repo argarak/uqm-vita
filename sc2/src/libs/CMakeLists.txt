@@ -8,7 +8,7 @@ add_subdirectory(log)
 add_subdirectory(math)
 add_subdirectory(memory)
 add_subdirectory(mikmod)
-add_subdirectory(network)
+#add_subdirectory(network)
 add_subdirectory(resource)
 add_subdirectory(sound)
 add_subdirectory(strings)
@@ -28,7 +28,7 @@ target_link_libraries(libs INTERFACE uqm_callback
                                      uqm_log
                                      uqm_math
                                      uqm_memory
-                                     uqm_network
+                                     #uqm_network
                                      uqm_resource
                                      uqm_sound
                                      uqm_strings

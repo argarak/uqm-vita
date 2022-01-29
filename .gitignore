@@ -1,6 +1,7 @@
 # CMake local files
 /build
 /CMakeUserPresets.json
+/debug_build
 
 # Editor/IDE settings directories
 .idea

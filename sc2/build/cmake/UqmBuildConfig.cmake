@@ -13,7 +13,8 @@ add_library(uqm_lib_threadlib INTERFACE)
 add_library(uqm_libs_external INTERFACE)
 target_link_libraries(uqm_libs_external INTERFACE uqm_lib_sdl
                                                   uqm_lib_vorbis
-                                                  uqm_lib_threadlib)
+                                                  uqm_lib_threadlib
+                                                  uqm_vita_stub)
 
 # SDL applications need to be linked with a special SDL target which provides
 # a WinMain function on Windows. This target is an alias for the appropriate
@@ -32,9 +33,9 @@ set(graphics sdl2 CACHE STRING "Graphics Engine")
 set_property(CACHE graphics PROPERTY STRINGS pure opengl sdl2)
 
 if(${graphics} STREQUAL sdl2)
-    find_package(SDL2 REQUIRED)
-    target_link_libraries(uqm_lib_sdl INTERFACE SDL2::SDL2)
-    target_link_libraries(uqm_sdlmain INTERFACE SDL2::SDL2main)
+    #find_package(SDL2 REQUIRED)
+    target_link_libraries(uqm_lib_sdl INTERFACE SDL2)
+    target_link_libraries(uqm_sdlmain INTERFACE SDL2main)
     target_compile_definitions(uqm_defines_c INTERFACE GFXMODULE_SDL SDL_DIR=SDL2)
     set(GFXMODULE sdl)
     set(HAVE_OPENGL 0)
@@ -61,7 +62,7 @@ set(ovcodec standard CACHE STRING "Ogg Vorbis codec")
 set_property(CACHE ovcodec PROPERTY STRINGS standard tremor none)
 if(${ovcodec} STREQUAL standard)
     set(OGGVORBIS vorbisfile)
-    find_package(Vorbis)
+    #find_package(Vorbis)
     if (TARGET Vorbis::vorbis)
         target_link_libraries(uqm_lib_vorbis INTERFACE Vorbis::vorbis Vorbis::vorbisfile)
     else()
@@ -97,13 +98,18 @@ endif()
 set(joystick enabled CACHE STRING "Joystick support")
 set_property(CACHE joystick PROPERTY STRINGS enabled disabled)
 
-set(netplay full CACHE STRING "Network Supermelee support")
+set(netplay none CACHE STRING "Network Supermelee support")
+
 set_property(CACHE netplay PROPERTY STRINGS none full ipv4)
 if(${netplay} STREQUAL none)
     # Do nothing
-elseif(${netplay} STREQUAL full)
-    set(NETPLAY FULL)
-    target_compile_definitions(uqm_defines_common INTERFACE NETPLAY=NETPLAY_FULL)
+  elseif(${netplay} STREQUAL full)
+    if(VITA)
+      message("netplay is not supported on the vita")
+    else()
+      set(NETPLAY FULL)
+      target_compile_definitions(uqm_defines_common INTERFACE NETPLAY=NETPLAY_FULL)
+    endif()
     # TODO "netlibs" library? "ws2_32"?
 elseif(${netplay} STREQUAL ipv4)
     set(NETPLAY IPV4)
@@ -121,8 +127,8 @@ set_property(CACHE ioformat PROPERTY STRINGS asm plainc)
 set(threadlib sdl CACHE STRING "Thread library")
 set_property(CACHE ioformat PROPERTY STRINGS sdl pthread)
 if(${threadlib} STREQUAL sdl)
-    find_package(SDL2 REQUIRED)
-    target_link_libraries(uqm_lib_threadlib INTERFACE SDL2::SDL2)
+    #find_package(SDL2 REQUIRED)
+    target_link_libraries(uqm_lib_threadlib INTERFACE SDL2)
     target_compile_definitions(uqm_defines_common INTERFACE THREADLIB_SDL)
     set(THREADLIB SDL)
 elseif(${threadlib} STREQUAL pthread)
@@ -152,17 +158,38 @@ string(CONCAT UNIX_CONTENTDIR ${INSTALL_SHAREDIR} /uqm/content)
 # is not necessarily what we want here.
 # TODO: Handle other targets?
 if(WIN32 OR CYGWIN)
-    set(CONTENTDIR "../content/")
-    set(USERDIR "%APPDATA%/uqm/")
-    set(MELEEDIR "%UQM_CONFIG_DIR%/teams/")
-    set(SAVEDIR "%UQM_CONFIG_DIR%/save/")
+  set(CONTENTDIR "../content/")
+  set(USERDIR "%APPDATA%/uqm/")
+  set(MELEEDIR "%UQM_CONFIG_DIR%/teams/")
+  set(SAVEDIR "%UQM_CONFIG_DIR%/save/")
 elseif(UNIX)
-    set(CONTENTDIR UNIX_CONTENTDIR)
-    set(USERDIR "~/.uqm/")
-    set(MELEEDIR "${UQM_CONFIG_DIR}/teams/")
-    set(SAVEDIR "${UQM_CONFIG_DIR}/save/")
+  set(CONTENTDIR UNIX_CONTENTDIR)
+  set(USERDIR "~/.uqm/")
+  set(MELEEDIR "~/.uqm/teams/")
+  set(SAVEDIR "~/.uqm/save/")
+elseif(VITA)
+  add_library(uqm_vita_stub INTERFACE)
+  target_link_libraries(uqm_vita_stub INTERFACE
+    SceDisplay_stub
+    SceCtrl_stub
+    SceAudio_stub
+    SceSysmodule_stub
+    SceGxm_stub
+    SceCommonDialog_stub
+    SceAppMgr_stub
+    SceTouch_stub
+    SceHid_stub
+    SceMotion_stub
+    m
+    )
+
+  add_definitions(-DVITA)
+  set(CONTENTDIR "ux0:/data/uqm/content/")
+  set(USERDIR "ux0:/data/uqm/")
+  set(MELEEDIR "ux0:/data/uqm/teams/")
+  set(SAVEDIR "ux0:/data/uqm/save/")
 else()
-    message(FATAL_ERROR "Unrecognized target operating system")
+  message(FATAL_ERROR "Unrecognized target operating system")
 endif()
 
 # TODO: CMAKE_C_BYTE_ORDER may be undefined in which case this will treat

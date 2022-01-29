@@ -34,6 +34,10 @@ extern "C" {
 #define OPT_PC  0x02
 #define OPT_ALL 0xFF
 
+#ifdef VITA
+#define PATH_MAX 256
+#endif
+
 extern int optWhichCoarseScan;
 extern int optWhichMenu;
 extern int optWhichFonts;

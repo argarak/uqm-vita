@@ -46,6 +46,7 @@
 #	ifndef NAME_MAX
 #		define NAME_MAX  _MAX_FNAME
 #	endif
+
 		// _MAX_DIR and FILENAME_MAX could also be candidates.
 		// If anyone can tell me which one matches NAME_MAX, please
 		// let me know.
@@ -65,8 +66,16 @@
 		 * This is relevant (at least) for Solaris.
 		 */
 #	ifndef NAME_MAX
-#		define NAME_MAX _POSIX_NAME_MAX
+#   ifdef VITA
+#     define NAME_MAX 16 // guess because i don't know!
+#   else
+#		  define NAME_MAX _POSIX_NAME_MAX
+#   endif
 #	endif
+#endif
+
+#ifdef VITA
+#define PATH_MAX 256
 #endif
 
 // Variations in path handling
@@ -106,6 +115,9 @@ typedef unsigned short mode_t;
 #	else
 #		define MKDIR(name, mode) ((void) mode, mkdir(name))
 #	endif
+#elif defined(VITA)
+#  include <psp2/io/stat.h>
+#  define MKDIR sceIoMkdir
 #else
 #	define MKDIR mkdir
 #endif
