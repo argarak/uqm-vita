@@ -180,6 +180,7 @@ elseif(VITA)
     SceTouch_stub
     SceHid_stub
     SceMotion_stub
+    SceLibKernel_stub
     m
     )
 

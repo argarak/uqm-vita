@@ -24,6 +24,9 @@
 #include <signal.h>
 #include <errno.h>
 #include "libs/threadlib.h"
+#ifdef VITA
+# include <psp2/kernel/clib.h>
+#endif
 
 #ifndef MAX_LOG_ENTRY_SIZE
 #	define MAX_LOG_ENTRY_SIZE 256
@@ -130,7 +133,7 @@ log_init (int max_lines)
 	int i;
 
 	maxDisp = max_lines;
-	streamOut = stderr;
+	streamOut = stdout;
 
 	// pre-term queue strings
 	for (i = 0; i < MAX_LOG_ENTRIES; ++i)
@@ -187,10 +190,14 @@ log_addV (log_Level level, const char *fmt, va_list list)
 	log_Entry full_msg;
 	vsnprintf (full_msg, sizeof (full_msg) - 1, fmt, list);
 	full_msg[sizeof (full_msg) - 1] = '\0';
-	
+
 	if ((int)level <= maxStreamLevel)
 	{
-		fprintf (streamOut, "%s\n", full_msg);
+    #ifdef VITA
+    sceClibPrintf("%s\n", full_msg);
+    #else
+    fprintf (streamOut, "%s\n", full_msg);
+    #endif
 	}
 
 	if ((int)level <= maxLevel)

@@ -8,7 +8,7 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
   endif()
 endif()
 
-include("${VITASDK}/share/vita.cmake" REQUIRED)
+include("$ENV{VITASDK}/share/vita.cmake" REQUIRED)
 
 set(VITA_APP_NAME "Ur-Quan Masters")
 set(VITA_TITLEID  "UQMC00001")

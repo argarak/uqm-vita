@@ -56,7 +56,6 @@
 #include "uqm/setup.h"
 #include "uqm/starcon.h"
 
-
 #if defined (GFXMODULE_SDL)
 #	include SDL_INCLUDE(SDL.h)
 			// Including this is actually necessary on OSX.
@@ -302,7 +301,6 @@ main (int argc, char *argv[])
 		log_showBox (false, false);
 		return EXIT_SUCCESS;
 	}
-	
 	log_add (log_User, "The Ur-Quan Masters v%d.%d.%d%s (compiled %s %s)\n"
 	        "This software comes with ABSOLUTELY NO WARRANTY;\n"
 			"for details see the included 'COPYING' file.\n",
