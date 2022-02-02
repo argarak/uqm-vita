@@ -42,6 +42,10 @@
 			// For getpwuid()
 #endif
 
+#ifdef VITA
+# include <psp2/kernel/clib.h>
+#endif
+
 /* Try to find a suitable value for %APPDATA% if it isn't defined on
  * Windows.
  */
@@ -298,6 +302,13 @@ expandPath (char *dest, size_t len, const char *src, int what)
 	destptr = dest;
 	destend = dest + len;
 
+  /* #ifdef VITA */
+  /* // we don't need to check the path surely! */
+  /* // fine maybe i'm just lazy */
+	/* memcpy(dest, src, len + 1); */
+  /* return 0; */
+  /* #endif */
+
 	if (what & EP_ENVVARS)
 	{
 		buf = HMalloc (len);
@@ -552,6 +563,24 @@ expandPath (char *dest, size_t len, const char *src, int what)
 		char *endPart;
 
 		pathStart = dest;
+#ifdef VITA
+  // split path, usually "ux0:/something", get the drive only first
+  char newsrc[strlen(src) + 1];
+  strncpy(newsrc, src, strlen(src));
+  newsrc[strlen(src) + 1] = '\0';
+
+  sceClibPrintf("newsrc: %s\n", newsrc);
+
+  char *vitaPath = strtok(newsrc, ":");
+
+  sceClibPrintf("vitapath: %s\n", vitaPath);
+
+  // make sure the drive is what was compiled by
+  if (strcmp(vitaPath, VITA_DATA_DRIVE) == 0) {
+    sceClibPrintf("woo we increment pathstart by this amount: %d\n", (strlen(vitaPath) + 1));
+    pathStart += (strlen(vitaPath) + 1);
+  }
+#endif
 #ifdef HAVE_DRIVE_LETTERS
 		if (isDriveLetter(pathStart[0]) && (pathStart[1] == ':'))
 		{
@@ -689,6 +718,27 @@ expandPathAbsolute (char *dest, size_t destLen, const char *src,
 	}
 
 	orgSrc = src;
+#ifdef VITA
+  char newsrc[strlen(src) + 1];
+  strncpy(newsrc, src, strlen(src));
+  newsrc[strlen(src) + 1] = '\0';
+
+  // split path, usually "ux0:/something", get the drive only first
+  char *vitaPath = strtok(newsrc, ":");
+
+  // make sure the drive is what was compiled by
+  if (strcmp(vitaPath, VITA_DATA_DRIVE) == 0) {
+    // now get the path after the drive
+    vitaPath = strtok(NULL, ":");
+
+    if (vitaPath[0] == '/') {
+      // Path is already absolute (of the form "ux0:/") nothing to do
+      *skipSrc = 0;
+      return dest;
+    }
+  }
+
+#endif /* ifdef VITA */
 #ifdef HAVE_DRIVE_LETTERS
 	if (isDriveLetter(src[0]) && (src[1] == ':'))
 	{
@@ -749,9 +799,7 @@ expandPathAbsolute (char *dest, size_t destLen, const char *src,
 	else
 #endif  /* HAVE_DRIVE_LETTERS */
 	{
-    #ifdef VITA
-    return NULL;
-    #else
+    #ifndef VITA
     // Relative dir
 		if (getcwd (dest, destLen) == NULL)
 		{
@@ -786,6 +834,12 @@ expandPathAbsolute (char *dest, size_t destLen, const char *src,
 		dest++;
 		destLen--;
 	}
+
+  #ifdef VITA
+  #include <psp2/kernel/clib.h>
+  // TODO: might need to add drive here
+  sceClibPrintf("dest: %s\n", dest);
+  #endif
 
 	*skipSrc = (size_t) (src - orgSrc);
 	return dest;

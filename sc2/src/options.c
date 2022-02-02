@@ -215,6 +215,8 @@ prepareConfigDir (const char *configDirName) {
 			configDirName = CONFIGDIR;
 	}
 
+  log_add (log_Debug, "pre config dir '%s'", configDirName);
+
 	if (expandPath (buf, PATH_MAX - 13, configDirName, EP_ALL_SYSTEM)
 			== -1)
 	{

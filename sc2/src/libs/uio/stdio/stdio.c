@@ -49,6 +49,10 @@
 #	include "../memdebug.h"
 #endif
 
+#ifdef VITA
+# include <psp2/kernel/clib.h>
+#endif
+
 static inline uio_GPFile *stdio_addFile(uio_GPDir *gPDir,
 		const char *fileName);
 static inline uio_GPDir *stdio_addDir(uio_GPDir *gPDir, const char *dirName);
@@ -370,20 +374,49 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 	const char *pathUpTo;
 	char *path;
 	struct stat statBuf;
+
 #ifdef HAVE_DRIVE_LETTERS
 	char driveName[3];
 #endif  /* HAVE_DRIVE_LETTERS */
 
-#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
+#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) || defined(VITA)
 	if (pDirHandle->extra->extra->upDir == NULL) {
 		// Top dir. Contains only drive letters and UNC \\server\share
 		// parts.
+#ifdef VITA
+  // split path, usually "ux0:/something", get the drive only first
+  char newsrc[strlen(name) + 1];
+  strncpy(newsrc, name, strlen(name));
+  newsrc[strlen(name) + 1] = '\0';
+
+  sceClibPrintf("newsrc: %s\n", newsrc);
+
+  char *vitaPath = strtok(newsrc, ":");
+
+  sceClibPrintf("vitapath: %s\n", vitaPath);
+  int vitaPathLen = strlen(vitaPath) + 2;
+  char vitaDrive[vitaPathLen];
+  sceClibPrintf("vitaPathLen: %d\n", vitaPathLen);
+
+  // make sure the drive is what was compiled by
+  if (strcmp(vitaPath, VITA_DATA_DRIVE) == 0) {
+    strncpy(vitaDrive, vitaPath, vitaPathLen - 2);
+    vitaDrive[vitaPathLen - 2] = ':';
+    vitaDrive[vitaPathLen - 1] = '\0';
+    // this causes a compiler warning: however the same assignment happens
+    // with drive letters enabled so i guess this was just by design!
+    strcpy(name, vitaDrive);
+
+    sceClibPrintf("vitadrive: %s\n", vitaDrive);
+  }
+#endif
 #ifdef HAVE_DRIVE_LETTERS
 		if (isDriveLetter(name[0]) && name[1] == ':' && name[2] == '\0') {
 			driveName[0] = tolower(name[0]);
 			driveName[1] = ':';
 			driveName[2] = '\0';
 			name = driveName;
+      sceClibPrintf("name: %s\n", name);
 		} else
 #endif  /* HAVE_DRIVE_LETTERS */
 #ifdef HAVE_UNC_PATHS
@@ -405,36 +438,46 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 #endif  /* HAVE_UNC_PATHS */
 	}
 #endif  /* defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) */
-	
+
+  sceClibPrintf("name: %s\n", name);
 	result = uio_GPDir_getPDirEntryHandle(pDirHandle, name);
 	if (result != NULL)
-		return result;
+    return result;
+  sceClibPrintf("name: %s\n", name);
 
-#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
+#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) || defined(VITA)
 	if (pDirHandle->extra->extra->upDir == NULL) {
 		// Need to create a 'directory' for the drive letter or UNC
 		// "\\server\share" part.
 		// It's no problem if we happen to create a dir for a non-existing
 		// drive. It should just produce an empty dir.
 		uio_GPDir *gPDir;
-		
+
 		gPDir = stdio_addDir(pDirHandle->extra, name);
+    sceClibPrintf("name: %s\n", name);
 		uio_GPDir_ref(gPDir);
+
 		return (uio_PDirEntryHandle *) uio_PDirHandle_new(
 				pDirHandle->pRoot, gPDir);
 	}
 #endif  /* defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) */
-	
+
+  sceClibPrintf("wah1\n");
+
 	pathUpTo = stdio_getPath(pDirHandle->extra);
+  sceClibPrintf("pathUpTo: %s\n", pathUpTo);
 	if (pathUpTo == NULL) {
 		// errno is set
 		return NULL;
 	}
 	path = joinPaths(pathUpTo, name);
+  sceClibPrintf("path: %s, name: %s\n", path, name);
 	if (path == NULL) {
 		// errno is set
 		return NULL;
 	}
+
+  sceClibPrintf("wah2\n");
 
 	if (stat(path, &statBuf) == -1) {
 #ifdef __SYMBIAN32__
@@ -457,9 +500,11 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 			return NULL;
 		}
 	}
+  sceClibPrintf("wah3\n");
 	uio_free(path);
 
 	if (S_ISREG(statBuf.st_mode)) {
+    sceClibPrintf("wah4\n");
 		uio_GPFile *gPFile;
 		
 		gPFile = stdio_addFile(pDirHandle->extra, name);
@@ -467,6 +512,7 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 		return (uio_PDirEntryHandle *) uio_PFileHandle_new(
 				pDirHandle->pRoot, gPFile);
 	} else if (S_ISDIR(statBuf.st_mode)) {
+    sceClibPrintf("wah5\n");
 		uio_GPDir *gPDir;
 		
 		gPDir = stdio_addDir(pDirHandle->extra, name);
@@ -474,6 +520,10 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 		return (uio_PDirEntryHandle *) uio_PDirHandle_new(
 				pDirHandle->pRoot, gPDir);
 	} else {
+    sceClibPrintf("wah6\n");
+    sceClibPrintf("Warning: Attempt to access '%s' from '%s', "
+				"which is not a regular file, nor a directory.\n", name,
+				pathUpTo);
 #ifdef DEBUG
 		fprintf(stderr, "Warning: Attempt to access '%s' from '%s', "
 				"which is not a regular file, nor a directory.\n", name,
@@ -766,9 +816,10 @@ stdio_getPath(uio_GPDir *gPDir) {
 	if (gPDir->extra->cachedPath == NULL) {
 		char *upPath;
 		size_t upPathLen, nameLen;
-	
+
+    sceClibPrintf("gPDir->extra->upDir: %s\n", gPDir->extra->upDir);
 		if (gPDir->extra->upDir == NULL) {
-#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
+#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) || defined(VITA)
 			// Drive letter or UNC \\server\share still needs to follow.
 			gPDir->extra->cachedPath = uio_malloc(1);
 			gPDir->extra->cachedPath[0] = '\0';
@@ -781,12 +832,19 @@ stdio_getPath(uio_GPDir *gPDir) {
 		}
 		
 		upPath = stdio_getPath(gPDir->extra->upDir);
+    sceClibPrintf("upPath: %s\n", upPath);
 		if (upPath == NULL) {
 			// errno is set
 			return NULL;
 		}
+    #ifdef VITA
+    if (strcmp("/", upPath) == 0) {
+      sceClibPrintf("DESTROY THE ROOT\n", upPath);
+      upPath[0] = '\0';
+    }
+    #endif
 			
-#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS)
+#if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) || defined(VITA)
 		if (upPath[0] == '\0') {
 			// The up dir is the root dir. Directly below the root dir are
 			// only dirs for drive letters and UNC \\share\server parts.
@@ -814,6 +872,7 @@ stdio_getPath(uio_GPDir *gPDir) {
 				gPDir->extra->name, nameLen);
 		gPDir->extra->cachedPath[upPathLen + nameLen + 1] = '\0';
 	}
+  sceClibPrintf("gPDir->extra->cachedPath: %s\n", gPDir->extra->cachedPath);
 	return gPDir->extra->cachedPath;
 }
 

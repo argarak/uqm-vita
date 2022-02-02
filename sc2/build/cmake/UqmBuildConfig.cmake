@@ -184,7 +184,7 @@ elseif(VITA)
     m
     )
 
-  add_definitions(-DVITA)
+  add_definitions(-DVITA -DVITA_DATA_DRIVE="ux0")
   set(CONTENTDIR "ux0:/data/uqm/content/")
   set(USERDIR "ux0:/data/uqm/")
   set(MELEEDIR "ux0:/data/uqm/teams/")

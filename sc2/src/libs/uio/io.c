@@ -38,6 +38,9 @@
 #ifdef uio_MEM_DEBUG
 #	include "memdebug.h"
 #endif
+#ifdef VITA
+# include <psp2/kernel/clib.h>
+#endif
 
 #if 0
 static int uio_accessDir(uio_DirHandle *dirHandle, const char *path,
@@ -176,7 +179,7 @@ uio_mountDir(uio_Repository *destRep, const char *mountPoint,
 		errno = EINVAL;
 		return NULL;
 	}
-	
+
 	// TODO: check if the filesystem is already mounted, and if so, reuse it.
 	// A RO filedescriptor will need to be replaced though if the
 	// filesystem needs to be remounted RW now.
@@ -199,7 +202,7 @@ uio_mountDir(uio_Repository *destRep, const char *mountPoint,
 #ifdef WIN32
 				| O_BINARY
 #endif
-				, 0);
+        , 0);
 		if (handle == NULL) {
 			// errno is set
 			return NULL;
@@ -249,11 +252,14 @@ uio_mountDir(uio_Repository *destRep, const char *mountPoint,
 		inPath = unixPath;
 #endif  /* BACKSLASH_IS_PATH_SEPARATOR */
 
+
+    // BIG ERROR HERE SOMEWHERE
 		if (inPath[0] == '/')
 			inPath++;
 		pRootHandle = uio_PRoot_getRootDirHandle(pRoot);
 		uio_walkPhysicalPath(pRootHandle, inPath, strlen(inPath),
-				&endDirHandle, &endInPath);
+                         &endDirHandle, &endInPath);
+
 		if (*endInPath != '\0') {
 			// Path inside the filesystem to mount does not exist.
 #ifdef BACKSLASH_IS_PATH_SEPARATOR
@@ -264,7 +270,7 @@ uio_mountDir(uio_Repository *destRep, const char *mountPoint,
 			errno = ENOENT;
 			return NULL;
 		}
-	
+
 		dirName = uio_malloc(endInPath - inPath + 1);
 		memcpy(dirName, inPath, endInPath - inPath);
 		dirName[endInPath - inPath] = '\0';
@@ -278,7 +284,8 @@ uio_mountDir(uio_Repository *destRep, const char *mountPoint,
 				flags & uio_MOUNT_LOCATION_MASK, relativeInfo);
 		mountTree = uio_mountTreeAddMountInfo(destRep, destRep->mountTree,
 				mountInfo, mountPoint, flags & uio_MOUNT_LOCATION_MASK,
-				relativeInfo);
+                                          relativeInfo);
+
 		// mountTree is the node in destRep->mountTree where mountInfo
 		// leads to.
 		mountInfo->mountTree = mountTree;
