@@ -60,8 +60,8 @@ static int copyError(int error,
  */
 int
 uio_walkPhysicalPath(uio_PDirHandle *startPDirHandle, const char *path,
-		size_t pathLen, uio_PDirHandle **endPDirHandle,
-		const char **pathRest) {
+                     size_t pathLen, uio_PDirHandle **endPDirHandle,
+                     const char **pathRest) {
 	const char *pathEnd;
 	const char *partStart, *partEnd;
 	char *tempBuf;
@@ -69,38 +69,27 @@ uio_walkPhysicalPath(uio_PDirHandle *startPDirHandle, const char *path,
 	uio_PDirEntryHandle *entry;
 	int retVal;
 
-  #ifdef VITA
-# include <psp2/kernel/clib.h>
-#endif
-
 	uio_PDirHandle_ref(startPDirHandle);
 	pDirHandle = startPDirHandle;
 	tempBuf = uio_malloc(strlen(path) + 1);
-			// XXX: Use a dynamically allocated array when moving to C99.
+  // XXX: Use a dynamically allocated array when moving to C99.
 	pathEnd = path + pathLen;
 	getFirstPathComponent(path, pathEnd, &partStart, &partEnd);
 	for (;;) {
-    sceClibPrintf("partStart: %s, partEnd: %s, path: %s, pathEnd: %s", partStart, partEnd, path, pathEnd);
-
 		if (partStart == pathEnd) {
-      sceClibPrintf("it's over\n");
 			retVal = 0;
 			break;
 		}
 		memcpy(tempBuf, partStart, partEnd - partStart);
 		tempBuf[partEnd - partStart] = '\0';
 
-
-    sceClibPrintf("tempBuf: %s\n", tempBuf);
 		entry = uio_getPDirEntryHandle(pDirHandle, tempBuf);
 		if (entry == NULL) {
-      sceClibPrintf("whoops ENOENT\n");
 			retVal = ENOENT;
 			break;
 		}
 		if (!uio_PDirEntryHandle_isDir(entry)) {
 			uio_PDirEntryHandle_unref(entry);
-      sceClibPrintf("whoops ENOTDIR\n");
 			retVal = ENOTDIR;
 			break;
 		}

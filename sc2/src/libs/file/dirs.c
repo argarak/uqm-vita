@@ -42,10 +42,6 @@
 			// For getpwuid()
 #endif
 
-#ifdef VITA
-# include <psp2/kernel/clib.h>
-#endif
-
 /* Try to find a suitable value for %APPDATA% if it isn't defined on
  * Windows.
  */
@@ -569,16 +565,13 @@ expandPath (char *dest, size_t len, const char *src, int what)
   strncpy(newsrc, src, strlen(src));
   newsrc[strlen(src) + 1] = '\0';
 
-  sceClibPrintf("newsrc: %s\n", newsrc);
-
   char *vitaPath = strtok(newsrc, ":");
-
-  sceClibPrintf("vitapath: %s\n", vitaPath);
 
   // make sure the drive is what was compiled by
   if (strcmp(vitaPath, VITA_DATA_DRIVE) == 0) {
-    sceClibPrintf("woo we increment pathstart by this amount: %d\n", (strlen(vitaPath) + 1));
     pathStart += (strlen(vitaPath) + 1);
+  } else {
+    // TODO: show user graphical error
   }
 #endif
 #ifdef HAVE_DRIVE_LETTERS
@@ -834,12 +827,6 @@ expandPathAbsolute (char *dest, size_t destLen, const char *src,
 		dest++;
 		destLen--;
 	}
-
-  #ifdef VITA
-  #include <psp2/kernel/clib.h>
-  // TODO: might need to add drive here
-  sceClibPrintf("dest: %s\n", dest);
-  #endif
 
 	*skipSrc = (size_t) (src - orgSrc);
 	return dest;

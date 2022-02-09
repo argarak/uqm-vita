@@ -389,14 +389,10 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
   strncpy(newsrc, name, strlen(name));
   newsrc[strlen(name) + 1] = '\0';
 
-  sceClibPrintf("newsrc: %s\n", newsrc);
-
   char *vitaPath = strtok(newsrc, ":");
 
-  sceClibPrintf("vitapath: %s\n", vitaPath);
   int vitaPathLen = strlen(vitaPath) + 2;
   char vitaDrive[vitaPathLen];
-  sceClibPrintf("vitaPathLen: %d\n", vitaPathLen);
 
   // make sure the drive is what was compiled by
   if (strcmp(vitaPath, VITA_DATA_DRIVE) == 0) {
@@ -406,8 +402,8 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
     // this causes a compiler warning: however the same assignment happens
     // with drive letters enabled so i guess this was just by design!
     strcpy(name, vitaDrive);
-
-    sceClibPrintf("vitadrive: %s\n", vitaDrive);
+  } else {
+    // TODO show user graphical error
   }
 #endif
 #ifdef HAVE_DRIVE_LETTERS
@@ -416,7 +412,6 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 			driveName[1] = ':';
 			driveName[2] = '\0';
 			name = driveName;
-      sceClibPrintf("name: %s\n", name);
 		} else
 #endif  /* HAVE_DRIVE_LETTERS */
 #ifdef HAVE_UNC_PATHS
@@ -439,11 +434,9 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 	}
 #endif  /* defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) */
 
-  sceClibPrintf("name: %s\n", name);
 	result = uio_GPDir_getPDirEntryHandle(pDirHandle, name);
 	if (result != NULL)
     return result;
-  sceClibPrintf("name: %s\n", name);
 
 #if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) || defined(VITA)
 	if (pDirHandle->extra->extra->upDir == NULL) {
@@ -454,7 +447,6 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 		uio_GPDir *gPDir;
 
 		gPDir = stdio_addDir(pDirHandle->extra, name);
-    sceClibPrintf("name: %s\n", name);
 		uio_GPDir_ref(gPDir);
 
 		return (uio_PDirEntryHandle *) uio_PDirHandle_new(
@@ -462,22 +454,17 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 	}
 #endif  /* defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) */
 
-  sceClibPrintf("wah1\n");
-
 	pathUpTo = stdio_getPath(pDirHandle->extra);
-  sceClibPrintf("pathUpTo: %s\n", pathUpTo);
 	if (pathUpTo == NULL) {
 		// errno is set
 		return NULL;
 	}
 	path = joinPaths(pathUpTo, name);
-  sceClibPrintf("path: %s, name: %s\n", path, name);
+
 	if (path == NULL) {
 		// errno is set
 		return NULL;
 	}
-
-  sceClibPrintf("wah2\n");
 
 	if (stat(path, &statBuf) == -1) {
 #ifdef __SYMBIAN32__
@@ -500,11 +487,9 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 			return NULL;
 		}
 	}
-  sceClibPrintf("wah3\n");
 	uio_free(path);
 
 	if (S_ISREG(statBuf.st_mode)) {
-    sceClibPrintf("wah4\n");
 		uio_GPFile *gPFile;
 		
 		gPFile = stdio_addFile(pDirHandle->extra, name);
@@ -512,7 +497,6 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 		return (uio_PDirEntryHandle *) uio_PFileHandle_new(
 				pDirHandle->pRoot, gPFile);
 	} else if (S_ISDIR(statBuf.st_mode)) {
-    sceClibPrintf("wah5\n");
 		uio_GPDir *gPDir;
 		
 		gPDir = stdio_addDir(pDirHandle->extra, name);
@@ -520,10 +504,6 @@ stdio_getPDirEntryHandle(const uio_PDirHandle *pDirHandle, const char *name) {
 		return (uio_PDirEntryHandle *) uio_PDirHandle_new(
 				pDirHandle->pRoot, gPDir);
 	} else {
-    sceClibPrintf("wah6\n");
-    sceClibPrintf("Warning: Attempt to access '%s' from '%s', "
-				"which is not a regular file, nor a directory.\n", name,
-				pathUpTo);
 #ifdef DEBUG
 		fprintf(stderr, "Warning: Attempt to access '%s' from '%s', "
 				"which is not a regular file, nor a directory.\n", name,
@@ -817,7 +797,6 @@ stdio_getPath(uio_GPDir *gPDir) {
 		char *upPath;
 		size_t upPathLen, nameLen;
 
-    sceClibPrintf("gPDir->extra->upDir: %s\n", gPDir->extra->upDir);
 		if (gPDir->extra->upDir == NULL) {
 #if defined(HAVE_DRIVE_LETTERS) || defined(HAVE_UNC_PATHS) || defined(VITA)
 			// Drive letter or UNC \\server\share still needs to follow.
@@ -832,14 +811,14 @@ stdio_getPath(uio_GPDir *gPDir) {
 		}
 		
 		upPath = stdio_getPath(gPDir->extra->upDir);
-    sceClibPrintf("upPath: %s\n", upPath);
 		if (upPath == NULL) {
 			// errno is set
 			return NULL;
 		}
     #ifdef VITA
+    // remove first slash, otherwise path would be ux0://something
+    // hacky but works
     if (strcmp("/", upPath) == 0) {
-      sceClibPrintf("DESTROY THE ROOT\n", upPath);
       upPath[0] = '\0';
     }
     #endif
@@ -872,7 +851,6 @@ stdio_getPath(uio_GPDir *gPDir) {
 				gPDir->extra->name, nameLen);
 		gPDir->extra->cachedPath[upPathLen + nameLen + 1] = '\0';
 	}
-  sceClibPrintf("gPDir->extra->cachedPath: %s\n", gPDir->extra->cachedPath);
 	return gPDir->extra->cachedPath;
 }
 
