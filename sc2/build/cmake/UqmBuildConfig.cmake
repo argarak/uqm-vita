@@ -151,6 +151,7 @@ string(REPLACE $prefix ${install_prefix} INSTALL_LIBDIR ${install_libdir})
 string(REPLACE $prefix ${install_prefix} INSTALL_SHAREDIR ${install_sharedir})
 string(CONCAT UNIX_CONTENTDIR ${INSTALL_SHAREDIR} /uqm/content)
 
+set(USE_ZIP_IO 1)
 
 # TODO: Is Cygwin Windows, or Unix, for UQM's purposes? config.h treats it
 # as Windows.  Does anyone actually build or test the game on Cygwin?
@@ -184,8 +185,8 @@ elseif(VITA)
     m
     )
 
-  add_definitions(-DVITA -DVITA_DATA_DRIVE="ux0")
-  set(CONTENTDIR "ux0:/data/uqm/content/")
+  add_definitions(-DVITA -DVITA_DATA_DRIVE="ux0" -DHAVE_ZIP)
+  set(CONTENTDIR "ux0:/data/uqm/content")
   set(USERDIR "ux0:/data/uqm/")
   set(MELEEDIR "ux0:/data/uqm/teams/")
   set(SAVEDIR "ux0:/data/uqm/save/")

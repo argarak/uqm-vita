@@ -67,7 +67,7 @@
 		 */
 #	ifndef NAME_MAX
 #   ifdef VITA
-#     define NAME_MAX 16 // guess because i don't know!
+#     define NAME_MAX 255 // guess because i don't know!
 #   else
 #		  define NAME_MAX _POSIX_NAME_MAX
 #   endif
@@ -75,7 +75,7 @@
 #endif
 
 #ifdef VITA
-#define PATH_MAX 256
+#define PATH_MAX 4096
 #endif
 
 // Variations in path handling
