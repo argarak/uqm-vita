@@ -272,6 +272,11 @@ main (int argc, char *argv[])
 	int gfxFlags;
 	int i;
 
+  #ifdef VITA
+  // disable back touch screen
+  SDL_setenv("VITA_DISABLE_TOUCH_BACK", "1", 1);
+  #endif // VITA
+
 	// NOTE: we cannot use the logging facility yet because we may have to
 	//   log to a file, and we'll only get the log file name after parsing
 	//   the options.

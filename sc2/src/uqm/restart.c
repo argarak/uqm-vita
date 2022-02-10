@@ -215,6 +215,8 @@ DoRestart (MENU_STATE *pMS)
 	{	// Does nothing, but counts as input for timeout purposes
 		LastInputTime = GetTimeCounter ();
 	}
+  // disable this behaviour on vita; might use touchscreen in future
+  #ifndef VITA
 	else if (MouseButtonDown)
 	{
 		Flash_pause(pMS->flashContext);
@@ -231,6 +233,7 @@ DoRestart (MENU_STATE *pMS)
 
 		LastInputTime = GetTimeCounter ();
 	}
+  #endif // VITA
 	else
 	{	// No input received, check if timed out
 		if (GetTimeCounter () - LastInputTime > InactTimeOut)
