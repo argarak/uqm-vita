@@ -53,6 +53,9 @@ typedef struct vcontrol_keypool {
 typedef struct vcontrol_joystick_axis {
 	keybinding *neg, *pos;
 	int polarity;
+  #ifdef VITA
+  int value;
+  #endif // VITA
 } axis_type;
 
 typedef struct vcontrol_joystick_hat {
@@ -152,6 +155,9 @@ create_joystick (int index)
 		for (j = 0; j < axes; j++)
 		{
 			x->axes[j].neg = x->axes[j].pos = NULL;
+      #ifdef VITA
+      x->axes[j].polarity = x->axes[j].value = 0;
+      #endif // VITA
 		}
 		for (j = 0; j < hats; j++)
 		{
@@ -814,6 +820,9 @@ VControl_ProcessJoyAxis (int port, int axis, int value)
 	int t;
 	if (!joysticks[port].stick)
 		return;
+  #ifdef VITA
+  joysticks[port].axes[axis].value = value;
+  #endif // VITA
 	t = joysticks[port].threshold;
 	if (value > t)
 	{
@@ -1298,3 +1307,19 @@ VControl_DumpGesture (char *buf, int n, VCONTROL_GESTURE *g)
 		return 0;
 	}
 }
+
+#ifdef VITA
+int
+VControl_GetJoyAxis(int port, int axis)
+{
+#ifdef HAVE_JOYSTICK
+	if( joycount <= port )
+		return 0;
+	if (!joysticks[port].stick || joysticks[port].numaxes <= axis )
+		return 0;
+	return joysticks[port].axes[axis].value;
+#else
+	return 0;
+#endif /* HAVE_JOYSTICK */
+};
+#endif // VITA

@@ -130,6 +130,7 @@ struct options_struct
 	DECL_CONFIG_OPTION(float, sfxVolumeScale);
 	DECL_CONFIG_OPTION(float, speechVolumeScale);
 	DECL_CONFIG_OPTION(bool, safeMode);
+  DECL_CONFIG_OPTION(bool, directionalJoystick);
 
 #define INIT_CONFIG_OPTION(name, val) \
 	{ val, false }
@@ -265,6 +266,7 @@ main (int argc, char *argv[])
 		INIT_CONFIG_OPTION(  sfxVolumeScale,    1.0f ),
 		INIT_CONFIG_OPTION(  speechVolumeScale, 1.0f ),
 		INIT_CONFIG_OPTION(  safeMode,          false ),
+    INIT_CONFIG_OPTION(  directionalJoystick, true ),
 	};
 	struct options_struct defaults = options;
 	int optionsResult;
@@ -396,6 +398,7 @@ main (int argc, char *argv[])
 	sfxVolumeScale = options.sfxVolumeScale.value;
 	speechVolumeScale = options.speechVolumeScale.value;
 	optAddons = options.addons;
+  optDirectionalJoystick = options.directionalJoystick.value;
 
 	prepareContentDir (options.contentDir, options.addonDir, argv[0]);
 	prepareMeleeDir ();
@@ -643,6 +646,7 @@ getUserConfigOptions (struct options_struct *options)
 	getBoolConfigValue (&options->fullscreen, "config.fullscreen");
 	getBoolConfigValue (&options->scanlines, "config.scanlines");
 	getBoolConfigValue (&options->showFps, "config.showfps");
+  getBoolConfigValue (&options->directionalJoystick, "config.directionaljoystick");
 	getBoolConfigValue (&options->keepAspectRatio, "config.keepaspectratio");
 	getGammaConfigValue (&options->gamma, "config.gamma");
 

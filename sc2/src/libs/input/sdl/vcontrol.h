@@ -95,6 +95,10 @@ int VControl_DumpGesture (char *buf, int n, VCONTROL_GESTURE *g);
 void VControl_ClearGesture (void);
 int  VControl_GetLastGesture (VCONTROL_GESTURE *g);
 
+#ifdef VITA
+int VControl_GetJoyAxis(int port, int axis);
+#endif // VITA
+
 /* Constants for handling the "Start bit."  If a gesture is made, and
  * then ends, within a single frame, it will still, for one frame,
  * have a nonzero value.  This is because Bit 16 will be on for the

@@ -69,7 +69,7 @@ static void rebind_control (WIDGET_CONTROLENTRY *widget);
 static void clear_control (WIDGET_CONTROLENTRY *widget);
 
 #define MENU_COUNT          8
-#define CHOICE_COUNT       24
+#define CHOICE_COUNT       25
 #define SLIDER_COUNT        4
 #define BUTTON_COUNT       10
 #define LABEL_COUNT         4
@@ -423,6 +423,7 @@ SetDefaults (void)
 	choices[21].selected = opts.musicremix;
 	choices[22].selected = opts.speech;
 	choices[23].selected = opts.keepaspect;
+  choices[24].selected = opts.directionaljoystick;
 
 	sliders[0].value = opts.musicvol;
 	sliders[1].value = opts.sfxvol;
@@ -457,6 +458,7 @@ PropagateResults (void)
 	opts.musicremix = choices[21].selected;
 	opts.speech = choices[22].selected;
 	opts.keepaspect = choices[23].selected;
+  opts.directionaljoystick = choices[24].selected;
 
 	opts.musicvol = sliders[0].value;
 	opts.sfxvol = sliders[1].value;
@@ -1284,6 +1286,7 @@ GetGlobalOptions (GLOBALOPTS *opts)
 	opts->musicremix = optRemixMusic ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 	opts->speech = optSpeech ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 	opts->keepaspect = optKeepAspectRatio ? OPTVAL_ENABLED : OPTVAL_DISABLED;
+  opts->directionaljoystick = optDirectionalJoystick ? OPTVAL_ENABLED : OPTVAL_DISABLED;
 	switch (snddriver) {
 	case audio_DRIVER_OPENAL:
 		opts->adriver = OPTVAL_OPENAL;
@@ -1540,6 +1543,7 @@ SetGlobalOptions (GLOBALOPTS *opts)
 	optWhichIntro = (opts->intro == OPTVAL_3DO) ? OPT_3DO : OPT_PC;
 	optStereoSFX = (opts->stereo == OPTVAL_ENABLED);
 	optKeepAspectRatio = (opts->keepaspect == OPTVAL_ENABLED);
+  optDirectionalJoystick = (opts->directionaljoystick == OPTVAL_ENABLED) ? TRUE : FALSE;
 	PlayerControls[0] = opts->player1;
 	PlayerControls[1] = opts->player2;
 
@@ -1554,6 +1558,7 @@ SetGlobalOptions (GLOBALOPTS *opts)
 	res_PutBoolean ("config.speech", opts->speech == OPTVAL_ENABLED);
 	res_PutBoolean ("config.3domovies", opts->intro == OPTVAL_3DO);
 	res_PutBoolean ("config.showfps", opts->fps == OPTVAL_ENABLED);
+  res_PutBoolean ("config.directionaljoystick", opts->directionaljoystick == OPTVAL_ENABLED);
 	res_PutBoolean ("config.smoothmelee", opts->meleezoom == OPTVAL_3DO);
 	res_PutBoolean ("config.positionalsfx", opts->stereo == OPTVAL_ENABLED); 
 	res_PutBoolean ("config.pulseshield", opts->shield == OPTVAL_3DO);

@@ -83,6 +83,9 @@ typedef struct globalopts_struct {
 	OPT_ENABLABLE music3do, musicremix, speech;
 	OPT_ENABLABLE keepaspect;
 	OPT_CONSOLETYPE menu, text, cscan, scroll, intro, meleezoom, shield;
+  #ifdef VITA
+  OPT_ENABLABLE directionaljoystick;
+  #endif
 	CONTROL_TEMPLATE player1, player2;
 	int speechvol, musicvol, sfxvol;
 	int gamma;

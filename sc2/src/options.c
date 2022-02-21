@@ -50,6 +50,9 @@ int optWhichIntro;
 int optWhichShield;
 int optSmoothScroll;
 int optMeleeScale;
+#ifdef VITA
+int optDirectionalJoystick;
+#endif // VITA
 const char **optAddons;
 
 BOOLEAN opt3doMusic;

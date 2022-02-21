@@ -36,6 +36,7 @@ Control Set
 UQM Remixes
 Speech
 Aspect Ratio
+Directional Joystick
 
 #(CAT_0_OPTS)
 320x240
@@ -50,15 +51,19 @@ Custom
 
 #(CAT_0_OPT_1_DESC)
 640x480 resolution.
+No effect in pure SDL mode.
 
 #(CAT_0_OPT_2_DESC)
 800x600 resolution.
+No effect in pure SDL mode.
 
 #(CAT_0_OPT_3_DESC)
 1024x768 resolution.
+No effect in pure SDL mode.
 
 #(CAT_0_OPT_4_DESC)
 1280x960 resolution.
+No effect in pure SDL mode.
 
 #(CAT_0_OPT_5_DESC)
 Custom resolution set from the commandline.
@@ -449,6 +454,16 @@ Currently only meaningful in OpenGL mode.
 Display the game with 4:3 aspect even when
 the window is not.
 Currently only meaningful in OpenGL mode.
+
+#(CAT_24_OPTS)
+Disabled
+Enabled
+
+#(CAT_24_OPT_0_DESC)
+Joystick works like PC arrow keys.
+
+#(CAT_24_OPT_1_DESC)
+Joystick steers ship in absolute direction.
 
 #(SLIDERS)
 Music Volume
