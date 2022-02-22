@@ -34,7 +34,7 @@
 #include "libs/graphics/gfx_common.h"
 #include "libs/mathlib.h"
 #include "libs/log.h"
-
+#include "options.h"
 
 //define SPIN_ON_LAUNCH to let the planet spin while
 // the lander animation is playing
@@ -1591,45 +1591,89 @@ landerSpeedNumer = WORLD_TO_VELOCITY (48);
 		if (crew_left)
 		{
 			SIZE index = GetFrameIndex (LanderFrame[0]);
-			if (turn_wait)
-				--turn_wait;
-			else if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT] ||
-					CurrentInputState.key[PlayerControls[0]][KEY_RIGHT])
-			{
-				COUNT landerSpeedNumer;
-				COUNT angle;
+      if (optDirectionalJoystick) {
+        BATTLE_INPUT_STATE InputState = GetDirectionalJoystickInput(index, 0);
 
-				if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT])
-					--index;
-				else
-					++index;
+        if (turn_wait)
+          --turn_wait;
+        else if ((InputState & BATTLE_LEFT) || (InputState & BATTLE_RIGHT))
+        {
+          COUNT landerSpeedNumer;
+          COUNT angle;
 
-				index = NORMALIZE_FACING (index);
-				LanderFrame[0] = SetAbsFrameIndex (LanderFrame[0], index);
+          if (InputState & BATTLE_LEFT)
+            --index;
+          else
+            ++index;
 
-				angle = FACING_TO_ANGLE (index);
-				landerSpeedNumer = GET_GAME_STATE (IMPROVED_LANDER_SPEED) ?
+          index = NORMALIZE_FACING (index);
+          LanderFrame[0] = SetAbsFrameIndex (LanderFrame[0], index);
+
+          angle = FACING_TO_ANGLE (index);
+          landerSpeedNumer = GET_GAME_STATE (IMPROVED_LANDER_SPEED) ?
 						WORLD_TO_VELOCITY (2 * 14) :
 						WORLD_TO_VELOCITY (2 * 8);
 
-#ifdef FAST_FAST
-landerSpeedNumer = WORLD_TO_VELOCITY (48);
-#endif
+          #ifdef FAST_FAST
+          landerSpeedNumer = WORLD_TO_VELOCITY (48);
+          #endif
 
-				SetVelocityComponents (&GLOBAL (velocity),
-						COSINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM,
-						SINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM);
+          SetVelocityComponents (&GLOBAL (velocity),
+                                 COSINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM,
+                                 SINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM);
 
-				turn_wait = SHUTTLE_TURN_WAIT;
-			}
+          turn_wait = SHUTTLE_TURN_WAIT;
+        }
 
-			if (!CurrentInputState.key[PlayerControls[0]][KEY_UP])
-			{
-				dx = 0;
-				dy = 0;
-			}
-			else
-				GetNextVelocityComponents (&GLOBAL (velocity), &dx, &dy, 1);
+        if (!(InputState & BATTLE_THRUST))
+        {
+          dx = 0;
+          dy = 0;
+        }
+        else
+          GetNextVelocityComponents (&GLOBAL (velocity), &dx, &dy, 1);
+
+      } else { // !optDirectionalJoystick
+        if (turn_wait)
+          --turn_wait;
+        else if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT] ||
+                 CurrentInputState.key[PlayerControls[0]][KEY_RIGHT])
+        {
+          COUNT landerSpeedNumer;
+          COUNT angle;
+
+          if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT])
+            --index;
+          else
+            ++index;
+
+          index = NORMALIZE_FACING (index);
+          LanderFrame[0] = SetAbsFrameIndex (LanderFrame[0], index);
+
+          angle = FACING_TO_ANGLE (index);
+          landerSpeedNumer = GET_GAME_STATE (IMPROVED_LANDER_SPEED) ?
+						WORLD_TO_VELOCITY (2 * 14) :
+						WORLD_TO_VELOCITY (2 * 8);
+
+          #ifdef FAST_FAST
+          landerSpeedNumer = WORLD_TO_VELOCITY (48);
+          #endif
+
+          SetVelocityComponents (&GLOBAL (velocity),
+                                 COSINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM,
+                                 SINE (angle, landerSpeedNumer) / LANDER_SPEED_DENOM);
+
+          turn_wait = SHUTTLE_TURN_WAIT;
+        }
+
+        if (!CurrentInputState.key[PlayerControls[0]][KEY_UP])
+        {
+          dx = 0;
+          dy = 0;
+        }
+        else
+          GetNextVelocityComponents (&GLOBAL (velocity), &dx, &dy, 1);
+      }
 
 			if (weapon_wait)
 				--weapon_wait;

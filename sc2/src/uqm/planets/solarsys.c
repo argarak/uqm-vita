@@ -837,20 +837,36 @@ flagship_inertial_thrust (COUNT CurrentAngle)
 static void
 ProcessShipControls (void)
 {
-	COUNT index;
-	SIZE delta_x, delta_y;
+  COUNT index;
+ 	SIZE delta_x, delta_y;
 
-	if (CurrentInputState.key[PlayerControls[0]][KEY_UP])
-		delta_y = -1;
-	else
-		delta_y = 0;
+  if (optDirectionalJoystick) {
+    index = GetFrameIndex (GLOBAL (ShipStamp.frame));
+    BATTLE_INPUT_STATE InputState = GetDirectionalJoystickInput(index, 0);
 
-	delta_x = 0;
-	if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT])
-		delta_x -= 1;
-	if (CurrentInputState.key[PlayerControls[0]][KEY_RIGHT])
-		delta_x += 1;
-		
+    if (InputState & BATTLE_THRUST)
+      delta_y = -1;
+    else
+      delta_y = 0;
+
+    delta_x = 0;
+    if (InputState & BATTLE_LEFT)
+      delta_x -= 1;
+    if (InputState & BATTLE_RIGHT)
+      delta_x += 1;
+  } else {
+    if (CurrentInputState.key[PlayerControls[0]][KEY_UP])
+      delta_y = -1;
+    else
+      delta_y = 0;
+
+    delta_x = 0;
+    if (CurrentInputState.key[PlayerControls[0]][KEY_LEFT])
+      delta_x -= 1;
+    if (CurrentInputState.key[PlayerControls[0]][KEY_RIGHT])
+      delta_x += 1;
+  }
+
 	if (delta_x || delta_y < 0)
 	{
 		GLOBAL (autopilot.x) = ~0;

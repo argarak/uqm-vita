@@ -428,7 +428,7 @@ ControlInputToBattleInput (const int *keyState, COUNT player, int direction)
 	BATTLE_INPUT_STATE InputState = 0;
 
   #ifdef VITA
-  if (direction < 0) {
+  if (direction < 0 || !optDirectionalJoystick) {
 		if (keyState[KEY_LEFT])
 			InputState |= BATTLE_LEFT;
 		if (keyState[KEY_RIGHT])
@@ -515,8 +515,6 @@ ConfirmExit (void)
 	return result;
 }
 
-#ifdef VITA
-
 // directional joystick input code, taken from the android port of UQM
 // https://github.com/pelya/commandergenius
 // https://libsdl-android.sourceforge.io/
@@ -552,23 +550,6 @@ static inline int atan2i(int y, int x)
 BATTLE_INPUT_STATE GetDirectionalJoystickInput(int direction, int player)
 {
 	BATTLE_INPUT_STATE InputState = 0;
-	static BOOLEAN JoystickThrust[NUM_PLAYERS] = { FALSE, FALSE };
-	static BOOLEAN JoystickTapFlag[NUM_PLAYERS] = { FALSE, FALSE };
-	static TimeCount JoystickTapTime[NUM_PLAYERS] = { 0, 0 };
-
-	/* if (CurrentInputState.key[PlayerControls[player]][KEY_THRUST]) */
-	/* 	InputState |= BATTLE_THRUST; */
-
-	/* if( VControl_GetJoysticksAmount() <= 0 ) */
-	/* { */
-	/* 	if (CurrentInputState.key[PlayerControls[player]][KEY_LEFT]) */
-	/* 		InputState |= BATTLE_LEFT; */
-	/* 	if (CurrentInputState.key[PlayerControls[player]][KEY_RIGHT]) */
-	/* 		InputState |= BATTLE_RIGHT; */
-	/* 	if (CurrentInputState.key[PlayerControls[player]][KEY_UP]) */
-	/* 		InputState |= BATTLE_THRUST; */
-	/* 	return InputState; */
-	/* } */
 
 	int axisX = VControl_GetJoyAxis(0, player * 2), axisY = VControl_GetJoyAxis(0, player * 2 + 1);
 
@@ -577,51 +558,36 @@ BATTLE_INPUT_STATE GetDirectionalJoystickInput(int direction, int player)
 		// Some basic gamepad input support
 		axisX = VControl_GetJoyAxis(2, player * 2);
 		axisY = VControl_GetJoyAxis(2, player * 2 + 1);
-		if( abs( axisX ) > 5000 || abs( axisY ) > 5000 ) // Deadspot at the center
-		{
-			//if( !JoystickTapFlag[player] )
-			//	TFB_SetOnScreenKeyboard_HiddenPermanently (); // Gamepad used - hide on-screen keys
-			JoystickTapFlag[player] = TRUE;
-			JoystickThrust[player] = FALSE;
-			// Turning thrust with joystick is uncomfortable
-			//if( abs( axisX ) > 25000 || abs( axisY ) > 25000 )
-			//	JoystickThrust[player] = TRUE;
-		}
-		else
+		if( !(abs( axisX ) > 5000 || abs( axisY ) > 5000) ) // Deadspot at the center
 		{
 			axisX = 0;
 			axisY = 0;
 		}
 	}
 
-	if( axisX == 0 && axisY == 0 )
-	{
-		// Process keyboard input only when joystick is not used
-		if (CurrentInputState.key[PlayerControls[player]][KEY_LEFT])
-			InputState |= BATTLE_LEFT;
-		if (CurrentInputState.key[PlayerControls[player]][KEY_RIGHT])
-			InputState |= BATTLE_RIGHT;
-		if (CurrentInputState.key[PlayerControls[player]][KEY_UP])
-			InputState |= BATTLE_THRUST;
-	}
+  // we should always process the d-pad over the analogue sticks
+  BOOLEAN btnUsed = FALSE;
 
-	if( !optDirectionalJoystick )
-	{
-		if( player == 1 )
-		{
-			axisX = - axisX;
-			axisY = - axisY;
-		}
-		if( axisX < -10000 )
-			InputState |= BATTLE_LEFT;
-		if( axisX > 10000 )
-			InputState |= BATTLE_RIGHT;
-		if( axisY < 0 )
-			InputState |= BATTLE_THRUST;
-		return InputState;
-	}
+  if (CurrentInputState.key[PlayerControls[player]][KEY_LEFT]) {
+    InputState |= BATTLE_LEFT;
+    btnUsed = TRUE;
+  }
+	if (CurrentInputState.key[PlayerControls[player]][KEY_RIGHT]) {
+		InputState |= BATTLE_RIGHT;
+    btnUsed = TRUE;
+  }
+  // we don't prematurely return after up was pressed as we also
+  // use the up button as a thrust control using the second stick
+	if (CurrentInputState.key[PlayerControls[player]][KEY_UP]) {
+    InputState |= BATTLE_THRUST;
+  }
 
-	if( axisX != 0 || axisY != 0 )
+  // d-pad was used, disregard the analogue sticks
+  if (btnUsed == TRUE) return InputState;
+
+  // physical joysticks drift a little sometimes, so make sure
+  // we are actually doing some definitive movement
+	if( abs(axisX) > 200 || abs(axisX) > 200 )
 	{
 		int angle = atan2i(axisY, axisX), diff;
 		// Convert it to 16 directions used by Melee
@@ -642,26 +608,7 @@ BATTLE_INPUT_STATE GetDirectionalJoystickInput(int direction, int player)
 			InputState |= BATTLE_LEFT;
 		if( diff > SHIP_DIRECTIONS / 2 )
 			InputState |= BATTLE_RIGHT;
+	}
 
-		if( !JoystickTapFlag[player] )
-		{
-			JoystickTapFlag[player] = TRUE;
-			if( GetTimeCounter() < JoystickTapTime[player] + ONE_SECOND )
-				JoystickThrust[player] = !JoystickThrust[player];
-			else
-				JoystickThrust[player] = TRUE;
-		}
-		if( JoystickThrust[player] )
-			InputState |= BATTLE_THRUST;
-	}
-	else
-	{
-		if( JoystickTapFlag[player] )
-		{
-			JoystickTapFlag[player] = FALSE;
-			JoystickTapTime[player] = GetTimeCounter();
-		}
-	}
 	return InputState;
 }
-#endif // VITA
