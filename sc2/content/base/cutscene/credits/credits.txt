@@ -25,10 +25,44 @@
 
 #(Port caption)
 13 C
+The Ur-Quan Masters Vita port
+CREW
+...................................................
+
+#(Vita port caption)
+17 C VITA PORT
+#(Vita port members)
+13 C
+argarak
+
+
+#(Vita cmake caption)
+17 C CMAKE BUILD SYSTEM
+#(Vita cmake members)
+13 C
+David Holmes
+
+
+#(Vita libraries caption)
+17 C VITA LIBRARIES
+#(Vita libraries members)
+13 C
+vitasdk
+devnoname120, Rinnegatamante,
+TheOfficialFloW and
+contributors
+https://vitasdk.org/
+
+
+#(padding)
+13 C
+...................................................
+
+#(Port caption)
+13 C
 The Ur-Quan Masters port
 CREW
 ...................................................
- 
 
 #(Core team caption)
 17 C CORE TEAM
