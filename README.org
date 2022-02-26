@@ -1,0 +1,114 @@
+[[./sce_sys/icon0.png]]
+
+* uqm-vita
+
+uqm-vita is a port of the Ur-Quan Masters project to the PS Vita system.
+Gameplay video: TODO
+
+The Ur-Quan Masters is a volunteer project that brings the classic game 'Star Control II' to modern systems. The code from the Ur-Quan Masters project is derived from code written by Toys for Bob, Inc. for the 3DO version of 'Star Control II'.
+
+uqm-vita is derived from David Holmes' UQM cmake build system (https://github.com/dholmes215/uqm).
+
+** Pre-requisites
+
+For uqm-vita to function correctly, you will need either the =FdFix= or =rePatch= plugins which fix a problem where file descriptors are invalidated after suspend and resume, causing erratic behaviour when suspending then resuming the game if not installed.
+
+If you have neither installed, =FdFix= is recommended. Installation instructions can be found here: https://github.com/TheOfficialFloW/FdFix
+
+It is recommended to save your game before suspend if possible.
+
+** Installation
+
+Make sure you have read the [[Pre-requisites]].
+TODO
+
+** Building
+
+If you want to build your own version of uqm-vita, you will need to configure vitasdk with all default packages installed. You will also need =cmake= and all prerequisites to vitasdk. Instructions on installing vitasdk can be found at [[https://vitasdk.org/]].
+
+First clone and navigate to the repository. Then execute the following commands:
+
+#+begin_src bash
+mkdir build
+cd build
+cmake -DCMAKE_BUILD_TYPE=Release .. # or Debug if you prefer
+make
+#+end_src
+
+You can specify the amount of concurrent processes for make with =-j<processes>=, e.g. =-j6=, to build faster if your hardware allows.
+
+If compilation succeeds, you should find =uqm.vpk= in the build directory to transfer to your Vita via FTP, USB or otherwise. Note that you will need the game content installed also, follow the instructions at the [[Installation]] stage, and omit installing the provided release vpk with installing your own build.
+
+Install [[https://github.com/CelesteBlue-dev/PSVita-RE-tools/tree/master/PrincessLog/build][PrincessLog]] if you want remote logging for debugging purposes.
+
+** Default Controls
+
+In melee, the default controls are:
+
+| Control              | Purpose                    |
+|----------------------+----------------------------|
+| D-Pad                | Movement                   |
+| Left Analogue Stick  | Directional Turning        |
+| Right Analogue Stick | Throttle (Digital Control) |
+| R1                   | Primary Attack             |
+| L1                   | Secondary Attack           |
+| Select               | Pause Game                 |
+| Start                | Quit                       |
+
+In *Space, the default controls are:
+
+| Control              | Purpose                    |
+|----------------------+----------------------------|
+| D-Pad                | Movement/Selection         |
+| Left Analogue Stick  | Directional Turning        |
+| Right Analogue Stick | Throttle (Digital Control) |
+| Circle               | Open Menu                  |
+| X                    | Confirm                    |
+| R1                   | Zoom In (Starmap)          |
+| L1                   | Zoom Out (Starmap)         |
+| Square               | Search (Starmap)           |
+| Select               | Pause Game                 |
+| Start                | Quit                       |
+
+When landed on a planet, the default controls are:
+
+| Control              | Purpose                    |
+|----------------------+----------------------------|
+| D-Pad                | Movement                   |
+| Left Analogue Stick  | Directional Turning        |
+| Right Analogue Stick | Throttle (Digital Control) |
+| R1                   | Lander Weapon              |
+| L1                   | Takeoff (Alternate)        |
+| Square               | Takeoff                    |
+| Select               | Pause Game                 |
+| Start                | Quit                       |
+
+Touchscreen input is not supported. In the Super Melee menu, the Square button is used to remove the selected ship from either team.
+
+** Options
+
+In the Setup menu, which can be accessed from the main menu, there are multiple options to configure, some of which work better than others at the moment. Refer to the following table for various gotchas or unexpected behaviour with certain options:
+
+| Category | Option        | Notes                                                                                        |
+|----------+---------------+----------------------------------------------------------------------------------------------|
+| Graphics | Resolution    | No effect. Original game is always 320x240 upscaled to match the Vita resolution.            |
+|          | Aspect Ratio  | No effect. Will always letterbox to fit the original aspect ratio.                           |
+|          | Display       | No effect.                                                                                   |
+|          | Gamma         | No effect.                                                                                   |
+|          | Scaler        | "None" by default (recommended). Bilinear also works fine, other scalers are extremely slow. |
+| 3DO/PC   | Melee Zoom    | "Stepped" by default. Smooth scrolling results in lag in melee, avoid if you can.*           |
+| Sound    | Positional    | Not supported.                                                                               |
+| Advanced | Show FPS      | This shows FPS in the remote console (not on screen). For this use a FPS counter plugin.     |
+|          | Sound Driver  | OpenAL not supported.                                                                        |
+|          | Sound Quality | High quality sound causes lag. Medium quality is recommended.                                |
+|          |               |                                                                                              |
+
+=*this may be due to some quirk with the gxm renderer, if you have an idea why smooth scaling could be slow, please let me know!=
+
+There is also a hidden option in the =ux0:/data/uqm/uqm.cfg= file called =directionaljoystick= where you can disable the directional turning joystick input.
+
+** Gameplay
+
+If you're new to the game, I highly suggest reading the [[https://wiki.uqm.stack.nl/Non-Spoiler_Hints][Non-Spoiler Hints]] at the [[https://wiki.uqm.stack.nl/Main_Page][Ultronomicon]] wiki. There are other useful articles there if you are already familiar with the game, keep in mind most pages are spoiler heavy!
+
+If you want an arcade experience of the battle system, try the Super Melee mode!
