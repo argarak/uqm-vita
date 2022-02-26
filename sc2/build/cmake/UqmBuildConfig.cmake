@@ -126,7 +126,7 @@ set_property(CACHE ioformat PROPERTY STRINGS asm plainc)
 
 set(threadlib sdl CACHE STRING "Thread library")
 set_property(CACHE ioformat PROPERTY STRINGS sdl pthread)
-set(threadlib pthread)
+set(threadlib sdl)
 if(${threadlib} STREQUAL sdl)
     #find_package(SDL2 REQUIRED)
     target_link_libraries(uqm_lib_threadlib INTERFACE SDL2)
@@ -184,10 +184,9 @@ elseif(VITA)
     SceMotion_stub
     SceLibKernel_stub
     m
-    pthread
     )
 
-  add_definitions(-DVITA -DHAVE_READDIR_R -DVITA_DATA_DRIVE="ux0" -DHAVE_ZIP -DHAVE_JOYSTICK)
+  add_definitions(-DVITA -DVITA_DATA_DRIVE="ux0" -DHAVE_ZIP -DHAVE_JOYSTICK)
   set(CONTENTDIR "ux0:/data/uqm/content")
   set(USERDIR "ux0:/data/uqm/")
   set(MELEEDIR "ux0:/data/uqm/teams/")

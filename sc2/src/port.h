@@ -186,10 +186,6 @@ typedef unsigned short mode_t;
 #	include <alloca.h>
 #endif
 
-#ifdef VITA
-static int _newlib_heap_size_user = 280 * 1024 * 1024;
-#endif // VITA
-
 // String formatting
 #ifdef _MSC_VER
 #	include <stdarg.h>

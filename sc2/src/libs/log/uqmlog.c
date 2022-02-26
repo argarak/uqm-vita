@@ -26,6 +26,7 @@
 #include "libs/threadlib.h"
 #ifdef VITA
 # include <psp2/kernel/clib.h>
+# include SDL_INCLUDE(SDL.h)
 #endif
 
 #ifndef MAX_LOG_ENTRY_SIZE
@@ -195,6 +196,12 @@ log_addV (log_Level level, const char *fmt, va_list list)
 	{
     #ifdef VITA
     sceClibPrintf("%s\n", full_msg);
+    if (level == log_Fatal) {
+      SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_ERROR,
+                               NULL,
+                               full_msg,
+                               NULL);
+    }
     #else
     fprintf (streamOut, "%s\n", full_msg);
     #endif

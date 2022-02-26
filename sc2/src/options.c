@@ -41,7 +41,9 @@
 #	include <libgen.h>
 			/* for dirname() */
 #endif
-
+#ifdef VITA
+# include SDL_INCLUDE(SDL.h)
+#endif // VITA
 
 int optWhichCoarseScan;
 int optWhichMenu;
@@ -181,6 +183,14 @@ prepareContentDir (const char *contentDirName, const char* addonDirName, const c
 	if (loc == NULL)
 	{
 		log_add (log_Fatal, "Fatal error: Could not find content.");
+    #ifdef VITA
+    SDL_ShowSimpleMessageBox(SDL_MESSAGEBOX_INFORMATION,
+                             NULL,
+                             "If this is your first time installing UQM "
+                             "please visit https://github.com/argarak/uqm-vita "
+                             "for full installation instructions",
+                             NULL);
+    #endif // VITA
 		exit (EXIT_FAILURE);
 	}
 

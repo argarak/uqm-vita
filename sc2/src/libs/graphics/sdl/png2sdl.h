@@ -17,11 +17,8 @@
 #ifndef PNG2SDL_H_
 #define PNG2SDL_H_
 
-#ifdef VITA
-#include <SDL2/SDL.h>
-#else
-#include <SDL.h>
-#endif
+#include "port.h"
+#include SDL_INCLUDE(SDL.h)
 
 SDL_Surface *TFB_png_to_sdl (SDL_RWops *src);
 
