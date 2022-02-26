@@ -1,0 +1,19 @@
+#+TITLE: Buttons
+
+- D-PAD
+  - up: joystick 0 button 8
+  - down: joystick 0 button 6
+  - left: joystick 0 button 7
+  - right: joystick 0 button 9
+
+- FACE BUTTONS
+  - X: joystick 0 button 2
+  - Circle: joystick 0 button 1
+  - Square: joystick 0 button 3
+  - Triangle: joystick 0 button 0
+
+- START: joystick 0 button 11
+- SELECT: joystick 0 button 10
+
+- L1: joystick 0 button 4
+- R1: joystick 0 button 5

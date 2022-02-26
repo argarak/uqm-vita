@@ -1,8 +1,0 @@
-PRJ_PLATFORMS
-DEFAULT
-
-PRJ_EXPORTS
-..\inc\SDL_image.h
-
-PRJ_MMPFILES
-SDL_image.mmp

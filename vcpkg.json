@@ -1,9 +1,0 @@
-{
-    "name": "uqm",
-    "version-string": "0.8.0",
-    "dependencies": [
-        "libpng",
-        "sdl2",
-        "libvorbis"
-    ]
-}
