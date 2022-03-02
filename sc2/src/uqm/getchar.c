@@ -27,7 +27,6 @@
 #include "resinst.h"
 #include "nameref.h"
 
-
 // TODO: This may be better done with UniChar at the cost of a tiny bit
 //   of overhead to convert UniChar back to UTF8 string. This overhead
 //   will probably be offset by removal of looped string-compare overhead ;)
@@ -35,7 +34,7 @@ struct joy_char
 {
 	unsigned char len;
 	char enc[7];
-		// 1+7 is a nice round number
+	// 1+7 is a nice round number
 };
 
 static int
@@ -81,7 +80,7 @@ LoadJoystickAlpha (STRING String, int *count)
 
 static int
 JoyCharFindIn (const joy_char_t *ch, const joy_char_t *set,
-		int setsize)
+							 int setsize)
 {
 	int i;
 
@@ -99,7 +98,7 @@ JoyCharIsLower (const joy_char_t *ch, TEXTENTRY_STATE *pTES)
 
 static void
 JoyCharSwitchReg (joy_char_t *ch, const joy_char_t *from,
-		const joy_char_t *to, int regsize)
+									const joy_char_t *to, int regsize)
 {
 	int i = JoyCharFindIn (ch, from, regsize);
 	if (i >= 0)
@@ -108,20 +107,20 @@ JoyCharSwitchReg (joy_char_t *ch, const joy_char_t *from,
 
 static void
 JoyCharToUpper (joy_char_t *outch, const joy_char_t *ch,
-		TEXTENTRY_STATE *pTES)
+								TEXTENTRY_STATE *pTES)
 {
 	*outch = *ch;
 	JoyCharSwitchReg (outch, pTES->JoyLower, pTES->JoyUpper,
-			pTES->JoyRegLength);
+										pTES->JoyRegLength);
 }
 
 static void
 JoyCharToLower (joy_char_t *outch, const joy_char_t *ch,
-		TEXTENTRY_STATE *pTES)
+								TEXTENTRY_STATE *pTES)
 {
 	*outch = *ch;
 	JoyCharSwitchReg (outch, pTES->JoyUpper, pTES->JoyLower,
-			pTES->JoyRegLength);
+										pTES->JoyRegLength);
 }
 
 BOOLEAN
@@ -138,7 +137,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		return (FALSE);
 
 	if (!pTES->Initialized)
-	{	// init basic vars
+	{ // init basic vars
 		int lwlen;
 
 		pTES->InputFunc = DoTextEntry;
@@ -146,35 +145,39 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		pTES->Initialized = TRUE;
 		pTES->JoystickMode = FALSE;
 		pTES->UpperRegister = TRUE;
-	
+
 		// init insertion point
 		if ((size_t)pTES->CursorPos > utf8StringCount (pTES->BaseStr))
 			pTES->CursorPos = utf8StringCount (pTES->BaseStr);
+		#ifdef VITA
+		pTES->CursorPos = 0; // always overwrite string from the start
+		#endif // VITA
 		pTES->InsPt = skipUTF8Chars (pTES->BaseStr, pTES->CursorPos);
 
 		// load joystick alphabet
 		pTES->JoyAlphaString = CaptureStringTable (
-				LoadStringTable (JOYSTICK_ALPHA_STRTAB));
+			LoadStringTable (JOYSTICK_ALPHA_STRTAB));
 		pTES->JoyAlpha = LoadJoystickAlpha (
-				SetAbsStringTableIndex (pTES->JoyAlphaString, 0),
-				&pTES->JoyAlphaLength);
+			SetAbsStringTableIndex (pTES->JoyAlphaString, 0),
+			&pTES->JoyAlphaLength);
 		pTES->JoyUpper = LoadJoystickAlpha (
-				SetAbsStringTableIndex (pTES->JoyAlphaString, 1),
-				&pTES->JoyRegLength);
+			SetAbsStringTableIndex (pTES->JoyAlphaString, 1),
+			&pTES->JoyRegLength);
 		pTES->JoyLower = LoadJoystickAlpha (
-				SetAbsStringTableIndex (pTES->JoyAlphaString, 2),
-				&lwlen);
+			SetAbsStringTableIndex (pTES->JoyAlphaString, 2),
+			&lwlen);
 		if (lwlen != pTES->JoyRegLength)
 		{
 			if (lwlen < pTES->JoyRegLength)
 				pTES->JoyRegLength = lwlen;
 			log_add (log_Warning, "Warning: Joystick upper-lower registers"
-					" size mismatch; using the smallest subset (%d)",
-					pTES->JoyRegLength);
+							 " size mismatch; using the smallest subset (%d)",
+							 pTES->JoyRegLength);
 		}
 
 		pTES->CacheStr = HMalloc (pTES->MaxSize * sizeof (*pTES->CacheStr));
 
+		SetPTES(pTES);
 		EnterCharacterMode ();
 		DoInput (pTES, TRUE);
 		ExitCharacterMode ();
@@ -194,6 +197,12 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 
 	pStr = pTES->InsPt;
 	len = strlen (pStr);
+
+	#ifdef VITA
+	int inputLen = 0;
+	len = 0;
+	#endif // VITA
+
 	// save a copy of string
 	CacheInsPt = pTES->InsPt;
 	CacheCursorPos = pTES->CursorPos;
@@ -202,7 +211,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	// process the pending character buffer
 	ch = GetNextCharacter ();
 	if (!ch && PulsedInputState.menu[KEY_MENU_ANY])
-	{	// keyboard repeat, but only when buffer empty
+	{ // keyboard repeat, but only when buffer empty
 		ch = GetLastCharacter ();
 	}
 	while (ch)
@@ -215,8 +224,11 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		chsize = getStringFromChar (chbuf, sizeof (chbuf), ch);
 		if (UniChar_isPrint (ch) && chsize > 0)
 		{
+			#ifdef VITA
+			inputLen++;
+			#endif // VITA
 			if (pStr + len - pTES->BaseStr + chsize < pTES->MaxSize)
-			{	// insert character, when fits
+			{ // insert character, when fits
 				memmove (pStr + chsize, pStr, len + 1);
 				memcpy (pStr, chbuf, chsize);
 				pStr += chsize;
@@ -224,19 +236,31 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 				changed = TRUE;
 			}
 			else
-			{	// does not fit
+			{ // does not fit
 				PlayMenuSound (MENU_SOUND_FAILURE);
 			}
 		}
 		ch = GetNextCharacter ();
 	}
 
+	#ifdef VITA
+	if (changed) {
+		// i don't exactly know how this works but it works
+		pStr[0] = '\0';
+		len = inputLen;
+		pTES->CursorPos = 0;
+
+		pTES->Success = TRUE;
+		return FALSE;
+	}
+	#endif // VITA
+
 	if (PulsedInputState.menu[KEY_MENU_DELETE])
 	{
 		if (len)
 		{
 			joy_char_t ch;
-			
+
 			ReadOneChar (&ch, pStr);
 			memmove (pStr, pStr + ch.len, len - ch.len + 1);
 			len -= ch.len;
@@ -248,8 +272,8 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		if (pStr > pTES->BaseStr)
 		{
 			UNICODE *prev = skipUTF8Chars (pTES->BaseStr,
-					pTES->CursorPos - 1);
-			
+																		 pTES->CursorPos - 1);
+
 			memmove (prev, pStr, len + 1);
 			pStr = prev;
 			--pTES->CursorPos;
@@ -261,7 +285,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		if (pStr > pTES->BaseStr)
 		{
 			UNICODE *prev = skipUTF8Chars (pTES->BaseStr,
-					pTES->CursorPos - 1);
+																		 pTES->CursorPos - 1);
 
 			pStr = prev;
 			len += (prev - pStr);
@@ -274,7 +298,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		if (len > 0)
 		{
 			joy_char_t ch;
-			
+
 			ReadOneChar (&ch, pStr);
 			pStr += ch.len;
 			len -= ch.len;
@@ -302,13 +326,13 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			changed = TRUE;
 		}
 	}
-	
+
 	if (pTES->JoyAlpha && (
-			PulsedInputState.menu[KEY_MENU_UP] ||
-			PulsedInputState.menu[KEY_MENU_DOWN] ||
-			PulsedInputState.menu[KEY_MENU_PAGE_UP] ||
-			PulsedInputState.menu[KEY_MENU_PAGE_DOWN]) )
-	{	// do joystick text
+				PulsedInputState.menu[KEY_MENU_UP] ||
+				PulsedInputState.menu[KEY_MENU_DOWN] ||
+				PulsedInputState.menu[KEY_MENU_PAGE_UP] ||
+				PulsedInputState.menu[KEY_MENU_PAGE_DOWN]) )
+	{ // do joystick text
 		joy_char_t ch;
 		joy_char_t newch;
 		joy_char_t cmpch;
@@ -318,18 +342,18 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		pTES->JoystickMode = TRUE;
 
 		if (len)
-		{	// changing an existing character
+		{ // changing an existing character
 			ReadOneChar (&ch, pStr);
 			curCharUpper = !JoyCharIsLower (&ch, pTES);
 		}
 		else
-		{	// adding a new character
+		{ // adding a new character
 			ch = pTES->JoyAlpha[0];
 			// new characters will have case determined by the
 			// currently selected register
 			curCharUpper = pTES->UpperRegister;
 		}
-		
+
 		newch = ch;
 		JoyCharToUpper (&cmpch, &ch, pTES);
 
@@ -355,19 +379,19 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 				PulsedInputState.menu[KEY_MENU_PAGE_DOWN])
 		{
 			if (len)
-			{	// single char change
+			{ // single char change
 				if (!curCharUpper)
 					JoyCharToUpper (&newch, &newch, pTES);
 				else
 					JoyCharToLower (&newch, &newch, pTES);
 			}
 			else
-			{	// register change
+			{ // register change
 				pTES->UpperRegister = !pTES->UpperRegister;
 			}
 		}
 		else
-		{	// check register
+		{ // check register
 			if (curCharUpper)
 				JoyCharToUpper (&newch, &newch, pTES);
 			else
@@ -375,9 +399,9 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		}
 
 		if (strcmp (newch.enc, ch.enc) != 0)
-		{	// new char is different, put it in
+		{ // new char is different, put it in
 			if (len)
-			{	// change current -- this is messy with utf8
+			{ // change current -- this is messy with utf8
 				int l = len - ch.len;
 				if (pStr + l - pTES->BaseStr + newch.len < pTES->MaxSize)
 				{
@@ -391,7 +415,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 				}
 			}
 			else
-			{	// append
+			{ // append
 				if (pStr + len - pTES->BaseStr + newch.len < pTES->MaxSize)
 				{
 					memcpy (pStr, newch.enc, newch.len);
@@ -400,20 +424,20 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 					changed = TRUE;
 				}
 				else
-				{	// does not fit
+				{ // does not fit
 					PlayMenuSound (MENU_SOUND_FAILURE);
 				}
 			}
 		}
 	}
-	
+
 	if (PulsedInputState.menu[KEY_MENU_SELECT])
-	{	// done entering
+	{ // done entering
 		pTES->Success = TRUE;
 		return FALSE;
 	}
 	else if (PulsedInputState.menu[KEY_MENU_EDIT_CANCEL])
-	{	// canceled entering
+	{ // canceled entering
 		pTES->Success = FALSE;
 		return FALSE;
 	}
@@ -423,7 +447,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	if (changed && pTES->ChangeCallback)
 	{
 		if (!pTES->ChangeCallback (pTES))
-		{	// changes not accepted - revert
+		{ // changes not accepted - revert
 			memcpy (pTES->BaseStr, pTES->CacheStr, pTES->MaxSize);
 			pTES->InsPt = CacheInsPt;
 			pTES->CursorPos = CacheCursorPos;
@@ -431,7 +455,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			PlayMenuSound (MENU_SOUND_FAILURE);
 		}
 	}
-		
+
 	if (pTES->FrameCallback)
 		return pTES->FrameCallback (pTES);
 	else

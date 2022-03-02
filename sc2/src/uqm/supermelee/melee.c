@@ -64,6 +64,7 @@
 #include <assert.h>
 #include <string.h>
 
+#define MENU_FRAME_RATE (ONE_SECOND / 120)
 
 static void StartMelee (MELEE_STATE *pMS);
 #ifdef NETPLAY
@@ -1029,6 +1030,16 @@ TeamNameFrameCallback (TEXTENTRY_STATE *pTES)
 	netInput ();
 #endif
 
+  // this continusly redraws a small part of the menu screen
+  // which also allows the vita keyboard to be drawn and used
+  // instead of just freezing
+	RECT r;
+	GetTeamStringRect (0, &r);
+	RepairMeleeFrame (&r);
+
+	SleepThreadUntil (pTES->NextTime);
+	pTES->NextTime = GetTimeCounter () + MENU_FRAME_RATE;
+
 	(void) pTES;
 
 	return TRUE;
@@ -1142,6 +1153,7 @@ DoEdit (MELEE_STATE *pMS)
 			{
 				TEXTENTRY_STATE tes;
 				char buf[MAX_TEAM_CHARS + 1];
+				char inputNameBuf[MAX_TEAM_CHARS + 1];
 
 				// going to enter text
 				pMS->CurIndex = 0;
@@ -1158,6 +1170,11 @@ DoEdit (MELEE_STATE *pMS)
 				tes.CbParam = pMS;
 				tes.ChangeCallback = OnTeamNameChange;
 				tes.FrameCallback = TeamNameFrameCallback;
+				tes.NextTime = GetTimeCounter () + MENU_FRAME_RATE;
+        // define "inputname" which stores the name of the input box
+        // as can be seen when the vita keyboard is used
+				sprintf(inputNameBuf, "Team %d name", side);
+				tes.InputName = inputNameBuf;
 				DoTextEntry (&tes);
 			
 				// done entering
@@ -1672,7 +1689,7 @@ DoConnectingDialog (MELEE_STATE *pMS)
 	{
 		NetState status = NetConnection_getState (conn);
 		if ((status == NetState_init) ||
-		    (status == NetState_inSetup))
+				(status == NetState_inSetup))
 		{
 			/* Connection complete! */
 			PlayerControl[which_side] = NETWORK_CONTROL | STANDARD_RATING;

@@ -154,6 +154,8 @@ typedef struct textentry_state
 	int CursorPos;     // set to current cursor pos in chars
 	int MaxSize;       // set to max size of edited string
 
+  UNICODE *InputName;
+
 	BOOLEAN (*ChangeCallback) (struct textentry_state *pTES);
 			// returns TRUE if last change is OK
 	BOOLEAN (*FrameCallback) (struct textentry_state *pTES);

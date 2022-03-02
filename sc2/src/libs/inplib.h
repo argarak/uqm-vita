@@ -23,6 +23,7 @@
 #include "libs/compiler.h"
 #include "libs/uio.h"
 #include "libs/unicode.h"
+#include "../uqm/controls.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -50,6 +51,7 @@ void EnterCharacterMode (void);
 void ExitCharacterMode (void);
 UniChar GetNextCharacter (void);
 UniChar GetLastCharacter (void);
+void SetPTES (TEXTENTRY_STATE* inPTES);
 
 /* Interrogating the current key configuration */
 

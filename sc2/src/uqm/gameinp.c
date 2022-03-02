@@ -277,8 +277,8 @@ UpdateInputState (void)
 		}
 	}
 
-	if (CurrentInputState.menu[KEY_PAUSE])
-		GamePaused = TRUE;
+  if (CurrentInputState.menu[KEY_PAUSE])
+    GamePaused = TRUE;
 
 	if (CurrentInputState.menu[KEY_EXIT])
 		ExitRequested = TRUE;

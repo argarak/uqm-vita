@@ -29,7 +29,12 @@
 #include "libs/log.h"
 #include "libs/reslib.h"
 #include "options.h"
+#include "../../../uqm/controls.h"
 
+#ifdef VITA
+#include <psp2/ime_dialog.h>
+#include "vitainput.h"
+#endif // VITA
 
 #define KBDBUFSIZE (1 << 8)
 static int kbdhead=0, kbdtail=0;
@@ -57,6 +62,7 @@ static int num_flight;
 static BOOLEAN InputInitialized = FALSE;
 
 static BOOLEAN in_character_mode = FALSE;
+static TEXTENTRY_STATE* pTES = NULL;
 
 static const char *menu_res_names[] = {
 	"pause",
@@ -188,9 +194,9 @@ initKeyConfig (void)
 	if (!res_HasKey ("keys.1.name"))
 	{
 		/* Either flight.cfg doesn't exist, or we're using an old version
-		   of flight.cfg, and thus we wound up loading untyped values into
-		   'keys.keys.1.name' and such.  Load the defaults from the content
-		   directory. */
+			 of flight.cfg, and thus we wound up loading untyped values into
+			 'keys.keys.1.name' and such.  Load the defaults from the content
+			 directory. */
 		LoadResourceIndex (contentDir, "uqm.key", "keys.");
 	}
 
@@ -299,6 +305,11 @@ TFB_UninitInput (void)
 #if SDL_MAJOR_VERSION == 1
 	HFree (kbdstate);
 #endif
+}
+
+void
+SetPTES (TEXTENTRY_STATE* inPTES) {
+	pTES = inPTES;
 }
 
 void
@@ -432,13 +443,21 @@ ProcessInputEvent (const SDL_Event *Event)
 {
 	if (!InputInitialized)
 		return;
-	
+
 	ProcessMouseEvent (Event);
 
 	if (in_character_mode && !set_character_mode)
 	{
 		set_character_mode = TRUE;
+		#ifdef VITA
+		if (pTES == NULL) {
+			SDL_StartTextInput ();
+		} else {
+			vita_start_text_input(pTES->InputName, pTES->BaseStr, pTES->MaxSize);
+		}
+		#else
 		SDL_StartTextInput ();
+		#endif // VITA
 	}
 
 	if (!in_character_mode && set_character_mode)

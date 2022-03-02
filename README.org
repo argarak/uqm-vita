@@ -19,7 +19,7 @@ It is recommended to save your game before suspend if possible.
 
 ** Installation
 
-Make sure you have read the [[Pre-requisites]].
+Make sure you have read the [[#Pre-requisites][Pre-requisites]].
 TODO
 
 ** Building
@@ -37,7 +37,7 @@ make
 
 You can specify the amount of concurrent processes for make with =-j<processes>=, e.g. =-j6=, to build faster if your hardware allows.
 
-If compilation succeeds, you should find =uqm.vpk= in the build directory to transfer to your Vita via FTP, USB or otherwise. Note that you will need the game content installed also, follow the instructions at the [[Installation]] stage, and omit installing the provided release vpk with installing your own build.
+If compilation succeeds, you should find =uqm.vpk= in the build directory to transfer to your Vita via FTP, USB or otherwise. Note that you will need the game content installed also, follow the instructions at the [[#Installation][Installation]] stage, and omit installing the provided release vpk with installing your own build.
 
 Install [[https://github.com/CelesteBlue-dev/PSVita-RE-tools/tree/master/PrincessLog/build][PrincessLog]] if you want remote logging for debugging purposes.
 
@@ -101,9 +101,8 @@ In the Setup menu, which can be accessed from the main menu, there are multiple 
 | Advanced | Show FPS      | This shows FPS in the remote console (not on screen). For this use a FPS counter plugin.     |
 |          | Sound Driver  | OpenAL not supported.                                                                        |
 |          | Sound Quality | High quality sound causes lag. Medium quality is recommended.                                |
-|          |               |                                                                                              |
 
-=*this may be due to some quirk with the gxm renderer, if you have an idea why smooth scaling could be slow, please let me know!=
+/*this may be due to some quirk with the gxm renderer, if you have an idea why smooth scaling could be slow, please let me know!/
 
 There is also a hidden option in the =ux0:/data/uqm/uqm.cfg= file called =directionaljoystick= where you can disable the directional turning joystick input.
 
