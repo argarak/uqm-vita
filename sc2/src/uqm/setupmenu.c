@@ -599,7 +599,9 @@ OnTextEntryEvent (WIDGET_TEXTENTRY *widget)
 	tes.CbParam = widget;
 	tes.ChangeCallback = OnTextEntryChange;
 	tes.FrameCallback = OnTextEntryFrame;
-
+	char inputNameBuf[128];
+	sprintf(inputNameBuf, "Enter %s...", widget->category);
+	tes.InputName = inputNameBuf;
 	SetMenuSounds (MENU_SOUND_NONE, MENU_SOUND_SELECT);
 	if (!DoTextEntry (&tes))
 	{	// editing failed (canceled) -- revert the changes

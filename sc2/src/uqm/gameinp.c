@@ -277,8 +277,8 @@ UpdateInputState (void)
 		}
 	}
 
-  if (CurrentInputState.menu[KEY_PAUSE])
-    GamePaused = TRUE;
+	if (CurrentInputState.menu[KEY_PAUSE])
+		GamePaused = TRUE;
 
 	if (CurrentInputState.menu[KEY_EXIT])
 		ExitRequested = TRUE;
@@ -427,8 +427,8 @@ ControlInputToBattleInput (const int *keyState, COUNT player, int direction)
 {
 	BATTLE_INPUT_STATE InputState = 0;
 
-  #ifdef VITA
-  if (direction < 0 || !optDirectionalJoystick) {
+	#ifdef VITA
+	if (direction < 0 || !optDirectionalJoystick) {
 		if (keyState[KEY_LEFT])
 			InputState |= BATTLE_LEFT;
 		if (keyState[KEY_RIGHT])
@@ -438,14 +438,14 @@ ControlInputToBattleInput (const int *keyState, COUNT player, int direction)
 	} else {
 		InputState |= GetDirectionalJoystickInput(direction, player);
 	}
-  #else
-  if (keyState[KEY_UP])
+	#else
+	if (keyState[KEY_UP])
 		InputState |= BATTLE_THRUST;
 	if (keyState[KEY_LEFT])
 		InputState |= BATTLE_LEFT;
 	if (keyState[KEY_RIGHT])
 		InputState |= BATTLE_RIGHT;
-  #endif // VITA
+	#endif // VITA
 
 	if (keyState[KEY_WEAPON])
 		InputState |= BATTLE_WEAPON;
@@ -470,7 +470,7 @@ BATTLE_INPUT_STATE
 PulsedInputToBattleInput (COUNT player)
 {
 	return ControlInputToBattleInput(
-    PulsedInputState.key[PlayerControls[player]], player, -1);
+		PulsedInputState.key[PlayerControls[player]], player, -1);
 }
 
 BOOLEAN
@@ -529,22 +529,22 @@ enum { atan2i_coeff_1 = ((int)(M_PI*65536.0/4)), atan2i_coeff_2 = (3*atan2i_coef
 
 static inline int atan2i(int y, int x)
 {
-   int angle;
-   int abs_y = abs(y);
-   if( abs_y == 0 )
-      abs_y = 1;
-   if (x>=0)
-   {
-      angle = atan2i_coeff_1 - atan2i_coeff_1 * (x - abs_y) / (x + abs_y);
-   }
-   else
-   {
-      angle = atan2i_coeff_2 - atan2i_coeff_1 * (x + abs_y) / (abs_y - x);
-   }
-   if (y < 0)
-      return(-angle);     // negate if in quad III or IV
-   else
-      return(angle);
+	 int angle;
+	 int abs_y = abs(y);
+	 if( abs_y == 0 )
+			abs_y = 1;
+	 if (x>=0)
+	 {
+			angle = atan2i_coeff_1 - atan2i_coeff_1 * (x - abs_y) / (x + abs_y);
+	 }
+	 else
+	 {
+			angle = atan2i_coeff_2 - atan2i_coeff_1 * (x + abs_y) / (abs_y - x);
+	 }
+	 if (y < 0)
+			return(-angle);     // negate if in quad III or IV
+	 else
+			return(angle);
 }
 
 BATTLE_INPUT_STATE GetDirectionalJoystickInput(int direction, int player)
@@ -565,28 +565,28 @@ BATTLE_INPUT_STATE GetDirectionalJoystickInput(int direction, int player)
 		}
 	}
 
-  // we should always process the d-pad over the analogue sticks
-  BOOLEAN btnUsed = FALSE;
+	// we should always process the d-pad over the analogue sticks
+	BOOLEAN btnUsed = FALSE;
 
-  if (CurrentInputState.key[PlayerControls[player]][KEY_LEFT]) {
-    InputState |= BATTLE_LEFT;
-    btnUsed = TRUE;
-  }
+	if (CurrentInputState.key[PlayerControls[player]][KEY_LEFT]) {
+		InputState |= BATTLE_LEFT;
+		btnUsed = TRUE;
+	}
 	if (CurrentInputState.key[PlayerControls[player]][KEY_RIGHT]) {
 		InputState |= BATTLE_RIGHT;
-    btnUsed = TRUE;
-  }
-  // we don't prematurely return after up was pressed as we also
-  // use the up button as a thrust control using the second stick
+		btnUsed = TRUE;
+	}
+	// we don't prematurely return after up was pressed as we also
+	// use the up button as a thrust control using the second stick
 	if (CurrentInputState.key[PlayerControls[player]][KEY_UP]) {
-    InputState |= BATTLE_THRUST;
-  }
+		InputState |= BATTLE_THRUST;
+	}
 
-  // d-pad was used, disregard the analogue sticks
-  if (btnUsed == TRUE) return InputState;
+	// d-pad was used, disregard the analogue sticks
+	if (btnUsed == TRUE) return InputState;
 
-  // physical joysticks drift a little sometimes, so make sure
-  // we are actually doing some definitive movement
+	// physical joysticks drift a little sometimes, so make sure
+	// we are actually doing some definitive movement
 	if( abs(axisX) > 200 || abs(axisX) > 200 )
 	{
 		int angle = atan2i(axisY, axisX), diff;

@@ -1030,9 +1030,9 @@ TeamNameFrameCallback (TEXTENTRY_STATE *pTES)
 	netInput ();
 #endif
 
-  // this continusly redraws a small part of the menu screen
-  // which also allows the vita keyboard to be drawn and used
-  // instead of just freezing
+	// this continusly redraws some small part of the screen
+	// which also allows the vita keyboard to be drawn and used
+	// instead of just freezing
 	RECT r;
 	GetTeamStringRect (0, &r);
 	RepairMeleeFrame (&r);
@@ -1041,6 +1041,10 @@ TeamNameFrameCallback (TEXTENTRY_STATE *pTES)
 	pTES->NextTime = GetTimeCounter () + MENU_FRAME_RATE;
 
 	(void) pTES;
+
+  if (pTES->Success) {
+    return FALSE; // input was received, terminate
+  }
 
 	return TRUE;
 			// Keep editing
@@ -1173,7 +1177,7 @@ DoEdit (MELEE_STATE *pMS)
 				tes.NextTime = GetTimeCounter () + MENU_FRAME_RATE;
         // define "inputname" which stores the name of the input box
         // as can be seen when the vita keyboard is used
-				sprintf(inputNameBuf, "Team %d name", side);
+				sprintf(inputNameBuf, "Team %d name", side + 1);
 				tes.InputName = inputNameBuf;
 				DoTextEntry (&tes);
 			

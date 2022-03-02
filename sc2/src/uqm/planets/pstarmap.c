@@ -1195,6 +1195,8 @@ DoStarSearch (MENU_STATE *pMS)
 	tes.CbParam = pss;
 	tes.ChangeCallback = OnStarNameChange;
 	tes.FrameCallback = OnStarNameFrame;
+	char inputNameBuf[] = "Search Star Name...";
+	tes.InputName = inputNameBuf;
 
 	SetMenuSounds (MENU_SOUND_ARROWS, MENU_SOUND_SELECT);
 	SetDefaultMenuRepeatDelay ();

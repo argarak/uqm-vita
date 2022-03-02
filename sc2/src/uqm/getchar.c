@@ -199,8 +199,9 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 	len = strlen (pStr);
 
 	#ifdef VITA
-	int inputLen = 0;
 	len = 0;
+	pTES->CursorPos = 0;
+	pStr = pTES->BaseStr;
 	#endif // VITA
 
 	// save a copy of string
@@ -224,14 +225,15 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		chsize = getStringFromChar (chbuf, sizeof (chbuf), ch);
 		if (UniChar_isPrint (ch) && chsize > 0)
 		{
-			#ifdef VITA
-			inputLen++;
-			#endif // VITA
 			if (pStr + len - pTES->BaseStr + chsize < pTES->MaxSize)
 			{ // insert character, when fits
 				memmove (pStr + chsize, pStr, len + 1);
 				memcpy (pStr, chbuf, chsize);
 				pStr += chsize;
+				#ifdef VITA
+				pStr[0] = '\0';
+				pTES->Success = TRUE;
+				#endif // VITA
 				++pTES->CursorPos;
 				changed = TRUE;
 			}
@@ -242,18 +244,6 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		}
 		ch = GetNextCharacter ();
 	}
-
-	#ifdef VITA
-	if (changed) {
-		// i don't exactly know how this works but it works
-		pStr[0] = '\0';
-		len = inputLen;
-		pTES->CursorPos = 0;
-
-		pTES->Success = TRUE;
-		return FALSE;
-	}
-	#endif // VITA
 
 	if (PulsedInputState.menu[KEY_MENU_DELETE])
 	{

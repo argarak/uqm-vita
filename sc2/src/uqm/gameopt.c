@@ -316,6 +316,7 @@ NameCaptainOrShip (bool nameCaptain)
 	UNICODE buf[MAX_NAME_SIZE] = "";
 	TEXTENTRY_STATE tes;
 	UNICODE *Setting;
+	char* inputNameBuf;
 
 	SetContext (StatusContext);
 	SetFlashRect (nameCaptain ? &captainNameRect : &shipNameRect);
@@ -328,11 +329,15 @@ NameCaptainOrShip (bool nameCaptain)
 	{
 		Setting = GLOBAL_SIS (CommanderName);
 		tes.MaxSize = sizeof (GLOBAL_SIS (CommanderName));
+		inputNameBuf = "Enter Captain Name...";
+		tes.InputName = inputNameBuf;
 	}
 	else
 	{
 		Setting = GLOBAL_SIS (ShipName);
 		tes.MaxSize = sizeof (GLOBAL_SIS (ShipName));
+		inputNameBuf = "Enter Ship Name...";
+		tes.InputName = inputNameBuf;
 	}
 
 	// text entry setup
@@ -505,6 +510,9 @@ NameSaveGame (COUNT gameIndex, UNICODE *buf)
 	tes.CbParam = gIndex;
 	tes.ChangeCallback = OnSaveNameChange;
 	tes.FrameCallback = 0;
+ 	char inputNameBuf[] = "Enter Save Game Name...";
+	tes.InputName = inputNameBuf;
+
 	r.extent.width = (204 - SAFE_X);
 	r.extent.height = 11;
 	r.corner.x = (30 + SAFE_X);
