@@ -23,7 +23,20 @@ It is recommended to save your game before suspend if possible.
 ** Installation
 
 Make sure you have read the [[#Pre-requisites][Pre-requisites]].
-TODO
+
+Note: if you have already obtained the application through the Vita Homebrew Browser or otherwise, you only need to copy and extract your chosen data zip.
+
+1. Visit the Github releases page to download game data and binaries: https://github.com/argarak/uqm-vita/releases
+2. Download =uqm.vpk= and either of =uqm-data-minimal.zip= or =uqm-data-full.zip=.
+   - =uqm-data-minimal.zip= contains only the base configuration and content to make the game work. Choose this version if you intend on installing your own selection of addons.
+   - =uqm-data-full.zip= contains the base configuration, content and all addon packs from [[http://sc2.sourceforge.net/downloads.php][the Ur-Quan Masters project download page]], i.e. the 3DO music, voice audio and all of the official Precursor music remix packs (fairly large ~380MiB).
+3. Make sure both files are downloaded correctly (you may want to check the MD5 hashes on the release page) and copy both the vpk file and the zip file to the =ux0:/data= directory (either using FTP, USB or otherwise).
+4. Once both files are copied (=uqm-data-full.zip= may take a while), extract/copy the =uqm= folder inside of the zip to the =ux0:/data= directory, after which you can delete the zip file to clear unnecessary space.
+5. Install the vpk file.
+
+*** Installing Addon Packs
+
+If you copied the files in =uqm-data-minimal.zip= you may want to install addon packs which you can find on [[http://sc2.sourceforge.net/downloads.php][the Ur-Quan Masters project download page]]. Addon packs can be installed by copying the addon file (usually =.uqm= or =.zip=) to =ux0:/data/uqm/content/addons=. Only official UQM addon packs will work.
 
 ** Building
 
@@ -106,7 +119,7 @@ In the Setup menu, which can be accessed from the main menu, there are multiple 
 |          | Sound Driver  | OpenAL not supported.                                                                        |
 |          | Sound Quality | High quality sound causes lag. Medium quality is recommended.                                |
 
-/*this may be due to some quirk with the gxm renderer, if you have an idea why smooth scaling could be slow, please let me know!/
+/*this may be due to some quirk with the gxm renderer, if you have an idea why smooth scaling could be slow, please let me know here: [[https://github.com/argarak/uqm-vita/issues/3][Issue #3]]/
 
 There is also a hidden option in the =ux0:/data/uqm/uqm.cfg= file called =directionaljoystick= where you can disable the directional turning joystick input.
 
