@@ -317,6 +317,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 		}
 	}
 
+	#ifndef VITA
 	if (pTES->JoyAlpha && (
 				PulsedInputState.menu[KEY_MENU_UP] ||
 				PulsedInputState.menu[KEY_MENU_DOWN] ||
@@ -420,6 +421,7 @@ DoTextEntry (TEXTENTRY_STATE *pTES)
 			}
 		}
 	}
+	#endif // VITA
 
 	if (PulsedInputState.menu[KEY_MENU_SELECT])
 	{ // done entering
