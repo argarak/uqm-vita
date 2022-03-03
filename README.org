@@ -34,6 +34,8 @@ Note: if you have already obtained the application through the Vita Homebrew Bro
 4. Once both files are copied (=uqm-data-full.zip= may take a while), extract/copy the =uqm= folder inside of the zip to the =ux0:/data= directory, after which you can delete the zip file to clear unnecessary space.
 5. Install the vpk file.
 
+If you used the content files from =uqm-data-full.zip=, you will need to enable the extra content in the Setup menu, then restart uqm-vita.
+
 *** Installing Addon Packs
 
 If you copied the files in =uqm-data-minimal.zip= you may want to install addon packs which you can find on [[http://sc2.sourceforge.net/downloads.php][the Ur-Quan Masters project download page]]. Addon packs can be installed by copying the addon file (usually =.uqm= or =.zip=) to =ux0:/data/uqm/content/addons=. Only official UQM addon packs will work.
