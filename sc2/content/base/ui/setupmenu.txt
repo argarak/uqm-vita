@@ -48,22 +48,23 @@ Custom
 
 #(CAT_0_OPT_0_DESC)
 320x240 resolution.
+No effect.
 
 #(CAT_0_OPT_1_DESC)
 640x480 resolution.
-No effect in pure SDL mode.
+No effect.
 
 #(CAT_0_OPT_2_DESC)
 800x600 resolution.
-No effect in pure SDL mode.
+No effect.
 
 #(CAT_0_OPT_3_DESC)
 1024x768 resolution.
-No effect in pure SDL mode.
+No effect.
 
 #(CAT_0_OPT_4_DESC)
 1280x960 resolution.
-No effect in pure SDL mode.
+No effect.
 
 #(CAT_0_OPT_5_DESC)
 Custom resolution set from the commandline.
@@ -103,21 +104,22 @@ Hardware-accelerated in OpenGL mode.
 #(CAT_2_OPT_2_DESC)
 Adaptive bilinear scaling.
 A slower, less blurry blending technique.
+Likely to be very slow!
 
 #(CAT_2_OPT_3_DESC)
 Advanced bilinear scaling.
 Hand-weighted blend that produces smoother curves.
-The most expensive scaler.
+Likely to be very slow!
 
 #(CAT_2_OPT_4_DESC)
 An interpolating scaler.
 Produces sharp edges, but at a higher resolution.
-Based on the Scale2x algorithm.
+Likely to be very slow!
 
 #(CAT_2_OPT_5_DESC)
 A high quality, very expensive interpolating scaler.
 Produces sharp edges, but at a higher resolution.
-Based on the HQ2X algorithm.
+Likely to be very slow!
 
 #(CAT_3_OPTS)
 Disabled
@@ -210,10 +212,12 @@ Fullscreen
 #(CAT_10_OPT_0_DESC)
 Display everything in a window.
 (if windowing is available)
+No effect.
 
 #(CAT_10_OPT_1_DESC)
 Game occupies the entire screen.
 (if available)
+No effect.
 
 #(CAT_11_OPTS)
 Slides
@@ -248,6 +252,7 @@ Resembles PC combat.
 #(CAT_13_OPT_1_DESC)
 Continuously scale the combat view.
 Resembles 3do combat.
+Currently very slow! Not recommended.
 
 #(CAT_14_OPTS)
 Disabled
@@ -259,6 +264,7 @@ Sound effects are center-channel.
 #(CAT_14_OPT_1_DESC)
 Uses positional SFX if possible..
 Currently only supported on OpenAL.
+Not yet supported.
 
 #(CAT_15_OPTS)
 None
@@ -277,8 +283,7 @@ you restart UQM.
 
 #(CAT_15_OPT_2_DESC)
 Use the Creative Labs OpenAL driver.
-This option will not take effect until
-you restart UQM.
+OpenAL not yet supported.
 
 #(CAT_16_OPTS)
 Low
@@ -297,8 +302,7 @@ you restart UQM.
 
 #(CAT_16_OPT_2_DESC)
 Highest audio quality.
-This option will not take effect until
-you restart UQM.
+Very slow! Not recommended.
 
 #(CAT_17_OPTS)
 Static
@@ -448,12 +452,12 @@ Force 4:3
 #(CAT_23_OPT_0_DESC)
 Allow any aspect ratio. The game may be
 stretched in windows that are not 4:3.
-Currently only meaningful in OpenGL mode.
+No effect.
 
 #(CAT_23_OPT_1_DESC)
 Display the game with 4:3 aspect even when
 the window is not.
-Currently only meaningful in OpenGL mode.
+No effect -- this is default behaviour.
 
 #(CAT_24_OPTS)
 Disabled
