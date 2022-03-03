@@ -573,6 +573,11 @@ OnTextEntryFrame (TEXTENTRY_STATE *pTES)
 	SleepThreadUntil (pTES->NextTime);
 	pTES->NextTime = GetTimeCounter () + MENU_FRAME_RATE;
 
+	#ifdef VITA
+	// break if text has been entered
+	if (pTES->Success) return FALSE;
+	#endif // VITA
+
 	return TRUE; // continue
 }
 
