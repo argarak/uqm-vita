@@ -3,7 +3,8 @@
 * uqm-vita
 
 uqm-vita is a port of the Ur-Quan Masters project to the PS Vita system.
-Gameplay video: TODO
+
+Gameplay video: https://www.youtube.com/watch?v=9YE5_cMjox8
 
 The Ur-Quan Masters is a volunteer project that brings the classic game 'Star Control II' to modern systems. The code from the Ur-Quan Masters project is derived from code written by Toys for Bob, Inc. for the 3DO version of 'Star Control II'.
 
@@ -11,9 +12,11 @@ uqm-vita is derived from David Holmes' UQM cmake build system (https://github.co
 
 ** Pre-requisites
 
+You will need a PS Vita equipped to run homebrew. Follow https://vita.hacks.guide/ if you haven't yet hacked your Vita.
+
 For uqm-vita to function correctly, you will need either the =FdFix= or =rePatch= plugins which fix a problem where file descriptors are invalidated after suspend and resume, causing erratic behaviour when suspending then resuming the game if not installed.
 
-If you have neither installed, =FdFix= is recommended. Installation instructions can be found here: https://github.com/TheOfficialFloW/FdFix
+If you have neither installed, =FdFix= is recommended. Installation instructions can be found here: https://github.com/TheOfficialFloW/FdFix (note that your taiHEN config may be in =ur0:tai/config.txt= instead)
 
 It is recommended to save your game before suspend if possible.
 
@@ -67,6 +70,7 @@ In *Space, the default controls are:
 | R1                   | Zoom In (Starmap)          |
 | L1                   | Zoom Out (Starmap)         |
 | Square               | Search (Starmap)           |
+| Triangle             | Search Next (Starmap)      |
 | Select               | Pause Game                 |
 | Start                | Quit                       |
 
